@@ -21,6 +21,16 @@ Node::item_set * Node::copyItemSet(const item_set& source){
     return itemSetCopy;
 }
 
-std::list<Item> * Node::intersectItemSets(const std::list<Item>& itemSet1, const std::list<Item>& itemSet2){
-    std::list<Item> * itemSetIntersection = new  std::list<Item>();
+void Node::unionItemSet(item_set * mergeDestination, item_set * mergeSource){
+    mergeSource->sort();
+    mergeDestination->sort();
+    auto destIterator = mergeDestination->begin();
+    for (auto &sourceItem : *mergeSource){
+        while (destIterator != mergeDestination->end() && *destIterator < sourceItem)
+            destIterator++;
+        if (*destIterator == sourceItem)
+            continue;
+        else
+            mergeDestination->insert(destIterator, sourceItem);
+    }
 }
