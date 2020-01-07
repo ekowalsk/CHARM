@@ -3,4 +3,6 @@ project(projekt)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(projekt main.cpp)
+add_executable(projekt main.cpp include/Node.h src/Node.cpp)
+
+include_directories(./include)

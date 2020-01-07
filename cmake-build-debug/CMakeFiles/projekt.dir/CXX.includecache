@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+.././include/Node.h
+list
+-
+map
+-
+
+/home/ewa/Dokumenty/EDAMI/projekt/main.cpp
+iostream
+-
+Node.h
+/home/ewa/Dokumenty/EDAMI/projekt/Node.h
+
