@@ -11,19 +11,27 @@ CharmNode::tid_list * CharmNode::copyTidList(tid_list * tidList){
     return tidListCopy;
 }
 
-void CharmNode::intersectTidList(tid_list * intersectSource){
-    tidList->sort();
-    intersectSource->sort();
-    auto intersectionTidList = new tid_list();
-    auto destIterator = tidList->begin();
-    for (auto &sourceTid : *intersectSource){
-        while (destIterator != tidList->end() && *destIterator < sourceTid)
-            destIterator++;
-        if (*destIterator == sourceTid)
-            intersectionTidList->push_back(sourceTid);
+void CharmNode::setIntersectedTidList(CharmNode node1, CharmNode node2){
+    setTidList(intersectTidList(node1.tidList, node2.tidList));
+}
+
+CharmNode::tid_list * CharmNode::intersectTidList(tid_list * tidList1, tid_list * tidList2){
+    tidList1->sort();
+    tidList2->sort();
+    auto intersectionList = new tid_list();
+    auto tidIterator1 = tidList1->begin();
+    for (auto &sourceTid : *tidList2){
+        while (tidIterator1 != tidList1->end() && *tidIterator1 < sourceTid)
+            tidIterator1++;
+        if (*tidIterator1 == sourceTid)
+            intersectionList->push_back(sourceTid);
     }
-    delete tidList;
-    tidList = intersectionTidList;
+    return intersectionList;
+}
+
+void CharmNode::setTidList(tid_list * tidList){
+    delete this->tidList;
+    this->tidList = copyTidList(tidList);
 }
 
 CharmNode::~CharmNode() {
