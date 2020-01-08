@@ -1,7 +1,4 @@
-#include <utility>
-
 #include "Node.h"
-//TODO delete tree
 
 Node::Node(Node * parent, const item_set& itemSet){
     this->items = copyItemSet(itemSet);
@@ -10,6 +7,7 @@ Node::Node(Node * parent, const item_set& itemSet){
 }
 
 Node::~Node(){
+    delete parent;
     delete items;
     delete children;
 }
@@ -21,16 +19,16 @@ Node::item_set * Node::copyItemSet(const item_set& source){
     return itemSetCopy;
 }
 
-void Node::unionItemSet(item_set * mergeDestination, item_set * mergeSource){
+void Node::unionItemSet(item_set * mergeSource){
     mergeSource->sort();
-    mergeDestination->sort();
-    auto destIterator = mergeDestination->begin();
+    items->sort();
+    auto destIterator = items->begin();
     for (auto &sourceItem : *mergeSource){
-        while (destIterator != mergeDestination->end() && *destIterator < sourceItem)
+        while (destIterator != items->end() && *destIterator < sourceItem)
             destIterator++;
         if (*destIterator == sourceItem)
             continue;
         else
-            mergeDestination->insert(destIterator, sourceItem);
+            items->insert(destIterator, sourceItem);
     }
 }
