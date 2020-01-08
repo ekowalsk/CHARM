@@ -11,8 +11,8 @@ CharmNode::tid_list * CharmNode::copyTidList(tid_list * tidList){
     return tidListCopy;
 }
 
-void CharmNode::setIntersectedTidList(CharmNode node1, CharmNode node2){
-    setTidList(intersectTidList(node1.tidList, node2.tidList));
+CharmNode::tid_list * CharmNode::intersectedTidList(CharmNode node1, CharmNode node2){
+    return intersectTidList(node1.tidList, node2.tidList);
 }
 
 CharmNode::tid_list * CharmNode::intersectTidList(tid_list * tidList1, tid_list * tidList2){

@@ -11,14 +11,11 @@ private:
 
     static tid_list * copyTidList(tid_list * tidList);
     static tid_list * intersectTidList(tid_list * tidList1, tid_list * tidList2);
-    void setTidList(tid_list * tidList);
 
 public:
     CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList);
     ~CharmNode();
-    void setIntersectedTidList(CharmNode node1, CharmNode node2);
-
-
-
+    static tid_list * intersectedTidList(CharmNode node1, CharmNode node2);
+    void setTidList(tid_list * tidList);
 };
 #endif //PROJEKT_CHARMNODE_H
