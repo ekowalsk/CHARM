@@ -34,6 +34,13 @@ void CharmNode::setTidList(tid_list * tidList){
     this->tidList = copyTidList(tidList);
 }
 
+int CharmNode::countHash(){
+    int tidSum = 0;
+    for (auto &tid : *tidList)
+        tidSum += tid;
+    return tidSum;
+}
+
 CharmNode::~CharmNode() {
     delete tidList;
 }

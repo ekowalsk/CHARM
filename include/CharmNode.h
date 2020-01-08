@@ -15,7 +15,9 @@ private:
 public:
     CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList);
     ~CharmNode();
+
     static tid_list * intersectedTidList(CharmNode node1, CharmNode node2);
     void setTidList(tid_list * tidList);
+    int countHash();
 };
 #endif //PROJEKT_CHARMNODE_H
