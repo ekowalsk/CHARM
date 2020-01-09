@@ -38,7 +38,7 @@ std::vector<std::set<int>> readTransactions(std::string& filepath)
         std::istringstream stream(line);
         std::string number;
         while (std::getline(stream, number, ','))
-            transaction.emplace(std::stoi(number));
+            transaction.insert(std::stoi(number));
         transactions.push_back(transaction);
     }
     file.close();
@@ -51,7 +51,7 @@ std::vector<std::string> readNames(std::string& filepath)
     std::string line;
     std::vector<std::string> names;
     while (!getLine(file, line).eof())
-        names.emplace_back(line);
+        names.push_back(line);
     file.close();
     return names;
 }
