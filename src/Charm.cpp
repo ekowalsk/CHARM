@@ -1,5 +1,5 @@
 #include "Charm.h"
-
+//TODO destruktor - usuwanie itemset
 Charm::Charm() {
     this->root = new CharmNode(nullptr, nullptr, nullptr);
     closedItemsets = std::unordered_map<int, std::list<std::pair<CharmNode::item_set *, int>>>();
@@ -14,7 +14,7 @@ void Charm::charmExtend(CharmNode * rootNode, int minSupport){
             itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
             if (itemSetUnion->size() >= minSupport){
                 tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
-                charmProperty(rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator);
+                charmProperty(&rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator);
             }
         }
         if(childIterator->second->hasChildren())
@@ -23,17 +23,17 @@ void Charm::charmExtend(CharmNode * rootNode, int minSupport){
             insertClosedSet(itemSetUnion, tidListIntersection);
     }
 }
-void Charm::charmProperty(CharmNode * rootNode, CharmNode::item_set * X, CharmNode::tid_list * Y, CharmNode::childIterator * nodeIiterator, CharmNode::childIterator * nodeJiterator){
+void Charm::charmProperty(CharmNode ** rootNode, CharmNode::item_set * X, CharmNode::tid_list * Y, CharmNode::childIterator * nodeIiterator, CharmNode::childIterator * nodeJiterator){
     CharmNode * nodeI = (*nodeIiterator)->second;
     CharmNode * nodeJ = (*nodeJiterator)->second;
     if (nodeI->equalsTidList(nodeJ)){
-        rootNode->removeChild(*nodeJiterator);
-        nodeI->updateItemSet(X);
+        (*rootNode)->removeChild(*nodeJiterator);
+        (*nodeIiterator)->second->updateItemSet(X);
     }
     else if (nodeJ->containsTidList(nodeI))
-        nodeI->updateItemSet(X);
+        (*nodeIiterator)->second->updateItemSet(X);
     else if (nodeI->containsTidList(nodeJ)){
-        rootNode->removeChild(*nodeJiterator);
+        (*rootNode)->removeChild(*nodeJiterator);
         (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y));
     }
     else
