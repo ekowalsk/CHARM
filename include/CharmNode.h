@@ -26,8 +26,11 @@ public:
     CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList);
     ~CharmNode();
 
-    static item_set * unionItemSet(CharmNode * node1, CharmNode * node2);
-    static tid_list * intersectedTidList(const CharmNode& node1, const CharmNode& node2);
+    static item_set * unionItemSet(const CharmNode * node1, const CharmNode * node2);
+    static tid_list * intersectedTidList(const CharmNode * node1, const CharmNode * node2);
+
+    childIterator getChildrenBegin();
+    childIterator getChildrenEnd();
 
     void setItemSet(item_set * itemSet);
     void setTidList(tid_list * tidList);
@@ -35,7 +38,14 @@ public:
     void insertChild(CharmNode * child);
     void removeChild(childIterator childIt);
 
-    int getHash();
+    void updateItemSet(item_set * itemSet);
+
+    int static getHash(tid_list * tidList);
     int getSupport();
+
+    static bool isItemSetContained(item_set * contains, item_set * contained);
+    bool equalsTidList(CharmNode *node);
+    bool containsTidList(CharmNode *node);
+    bool hasChildren();
 };
 #endif //PROJEKT_CHARMNODE_H
