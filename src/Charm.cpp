@@ -5,20 +5,30 @@ Charm::Charm() {
     closedItemsets = std::unordered_map<int, std::list<std::pair<CharmNode::item_set *, int>>>();
 }
 
-void Charm::charmExtend(CharmNode * rootNode, int minSupport){
-    for (auto childIterator = rootNode->getChildrenBegin(); childIterator != rootNode->getChildrenEnd(); childIterator++) {
+Charm::closedItemsetsmap Charm::charm(CharmNode ** rootNode, int minSupport){
+    charmExtend(rootNode, minSupport);
+    return closedItemsets;
+}
+
+void Charm::charmExtend(CharmNode ** rootNode, int minSupport){
+    for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd(); childIterator++) {
         auto rightHandChildren = childIterator;
-        CharmNode::item_set * itemSetUnion = nullptr;
-        CharmNode::tid_list * tidListIntersection = nullptr;
-        for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != rootNode->getChildrenEnd(); rNeighbourIterator++){
+        CharmNode::item_set * itemSetUnion = childIterator->second->getItemSet();
+        CharmNode::tid_list * tidListIntersection = childIterator->second->getTidList();
+        for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd();){
+            auto savedIterator= rNeighbourIterator;
+            ++savedIterator;
             itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
-            if (itemSetUnion->size() >= minSupport){
-                tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
-                charmProperty(&rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator);
-            }
+            tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
+            if (tidListIntersection->size() >= minSupport)
+                charmProperty(rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator);
+            rNeighbourIterator = savedIterator;
         }
-        if(childIterator->second->hasChildren())
-            charmExtend(childIterator->second, minSupport);
+        if(childIterator->second->hasChildren()) {
+            charmExtend(&(childIterator->second), minSupport);
+            childIterator->second->removeChildren();
+        }
+
         if(!isSubsumed(itemSetUnion, tidListIntersection))
             insertClosedSet(itemSetUnion, tidListIntersection);
     }
@@ -64,6 +74,14 @@ bool Charm::isSubsumed(CharmNode::item_set * itemSet, CharmNode::tid_list * tidL
 
     } catch (std::out_of_range& e){
         return false;
+    }
+}
+
+void Charm::printClosedItemsets(){
+    for (auto element : closedItemsets){
+        for (auto closedItemSet : element.second){
+            CharmNode::printItemSet(closedItemSet.first);
+        }
     }
 }
 

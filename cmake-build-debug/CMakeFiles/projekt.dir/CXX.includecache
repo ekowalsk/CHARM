@@ -18,7 +18,9 @@ list
 map
 -
 
-/home/ewa/Dokumenty/EDAMI/projekt/src/Charm.cpp
+/home/ewa/Dokumenty/EDAMI/projekt/main.cpp
+iostream
+-
 Charm.h
-/home/ewa/Dokumenty/EDAMI/projekt/src/Charm.h
+/home/ewa/Dokumenty/EDAMI/projekt/Charm.h
 

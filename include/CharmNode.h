@@ -32,11 +32,15 @@ public:
     childIterator getChildrenBegin();
     childIterator getChildrenEnd();
 
+    item_set * getItemSet();
+    tid_list * getTidList();
+
     void setItemSet(item_set * itemSet);
     void setTidList(tid_list * tidList);
 
     void insertChild(CharmNode * child);
     void removeChild(childIterator childIt);
+    void removeChildren();
 
     void updateItemSet(item_set * itemSet);
 
@@ -47,5 +51,7 @@ public:
     bool equalsTidList(CharmNode *node);
     bool containsTidList(CharmNode *node);
     bool hasChildren();
+
+    void static printItemSet(item_set * itemSet);
 };
 #endif //PROJEKT_CHARMNODE_H

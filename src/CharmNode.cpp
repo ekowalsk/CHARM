@@ -1,10 +1,20 @@
+#include <iostream>
+
 #include "CharmNode.h"
 
-CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList){
-    this->itemSet = copyItemSet(itemSet);
-    this->itemSet->sort();
-    this->tidList = copyTidList(tidList);
-    this->tidList->sort();
+CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList) {
+    if (itemSet != nullptr) {
+        this->itemSet = copyItemSet(itemSet);
+        this->itemSet->sort();
+    }
+    else
+        this->itemSet = nullptr;
+    if (tidList != nullptr) {
+        this->tidList = copyTidList(tidList);
+        this->tidList->sort();
+    }
+    else
+        this->tidList = nullptr;
     this->parent = parent;
     children = new std::multimap<int, CharmNode *>();
 }
@@ -17,7 +27,9 @@ CharmNode::item_set * CharmNode::copyItemSet(const item_set * source){
 }
 
 CharmNode::item_set * CharmNode::unionItemSet(item_set * itemSet1, item_set * itemSet2){
-    auto * itemSetUnion = new item_set();
+    itemSet1->sort();
+    itemSet2->sort();
+    auto * itemSetUnion = copyItemSet(itemSet1);
     auto itemIterator = itemSet1->begin();
     for (auto &item : *itemSet2){
         while (itemIterator != itemSet1->end() && *itemIterator < item)
@@ -25,7 +37,7 @@ CharmNode::item_set * CharmNode::unionItemSet(item_set * itemSet1, item_set * it
         if (*itemIterator == item)
             continue;
         else
-            itemSetUnion->insert(itemIterator, item);
+            itemSetUnion->push_back(item);
     }
     return itemSetUnion;
 }
@@ -42,6 +54,8 @@ CharmNode::tid_list * CharmNode::copyTidList(tid_list * tidList){
 }
 
 CharmNode::tid_list * CharmNode::intersectTidList(tid_list * tidList1, tid_list * tidList2){
+    tidList1->sort();
+    tidList2->sort();
     auto intersectionList = new tid_list();
     auto tidIterator1 = tidList1->begin();
     for (auto &sourceTid : *tidList2){
@@ -62,6 +76,14 @@ CharmNode::childIterator CharmNode::getChildrenBegin(){
 }
 CharmNode::childIterator CharmNode::getChildrenEnd(){
     return  children->end();
+}
+
+CharmNode::item_set * CharmNode::getItemSet(){
+    return itemSet;
+}
+
+CharmNode::tid_list * CharmNode::getTidList(){
+    return tidList;
 }
 
 void CharmNode::setItemSet(item_set * itSet){
@@ -85,10 +107,14 @@ void CharmNode::removeChild(childIterator childIt){
     children->erase(childIt);
 }
 
+void CharmNode::removeChildren(){
+    children->clear();
+}
+
 void CharmNode::updateItemSet(item_set * itemSet){
     this->itemSet = unionItemSet(this->itemSet, itemSet);
     for (auto child = children-> begin(); child != children->end(); child++)
-        updateItemSet(itemSet);
+        child->second->updateItemSet(itemSet);
 }
 
 int CharmNode::getHash(tid_list * tidList){
@@ -136,9 +162,18 @@ bool CharmNode::hasChildren(){
     return !children->empty();
 }
 
+void CharmNode::printItemSet(item_set * itemSet){
+    for (auto &item : *itemSet)
+        std::cout << item;
+    std::cout << std::endl;
+}
+
 CharmNode::~CharmNode() {
-    delete itemSet;
-    delete tidList;
-    delete parent;
+    if (itemSet != nullptr)
+        delete itemSet;
+    if (tidList != nullptr)
+        delete tidList;
+    if (parent != nullptr)
+        delete parent;
     delete children;
 }
