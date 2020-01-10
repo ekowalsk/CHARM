@@ -43,7 +43,7 @@ void Charm::charmProperty(CharmNode * rootNode, CharmNode::item_set * X, CharmNo
 void Charm::insertClosedSet(CharmNode::item_set * itemSet, CharmNode::tid_list * tidList){
     int hash = CharmNode::getHash(tidList);
     try {
-       .push_back({itemSet, tidList->size()});
+        closedItemsets.at(hash).push_back({itemSet, tidList->size()});
     } catch (std::out_of_range& e){
         closedItemsets.insert(std::make_pair(hash, std::list<std::pair<CharmNode::item_set *, int>>()));
         closedItemsets.at(hash).push_back({itemSet, tidList->size()});
