@@ -1,16 +1,24 @@
-#ifndef PROJEKT_BASECHARM_H
-#define PROJEKT_BASECHARM_H
+#ifndef PROJEKT_CHARM_H
+#define PROJEKT_CHARM_H
 
 #include <unordered_map>
 
-#include "Node.h"
 
-class BaseCharm {
+#include "CharmNode.h"
+
+class Charm {
 private:
-    Node * root;
-    std::unordered_map<int, std::list<Node::item_set>> closedItemsets;
+    CharmNode * root;
+    std::unordered_map<int, std::list<std::pair<CharmNode::item_set *, int>>> closedItemsets; //unordered_multimap<hashValue,list<closedSet, support>>
+
+    void charmExtend(CharmNode * rootNode, int minSupport);
+    static void charmProperty(CharmNode * rootNode, CharmNode::item_set * X, CharmNode::tid_list * Y, CharmNode::childIterator * nodeI, CharmNode::childIterator * nodeJ);
+
+    void insertClosedSet(CharmNode::item_set * itemSet, CharmNode::tid_list * tidList);
+    bool isSubsumed(CharmNode::item_set * itemSet, CharmNode::tid_list * tidList);
 public:
-    BaseCharm(Node * root);
+    Charm();
+    ~Charm();
 };
 
-#endif //PROJEKT_BASECHARM_H
+#endif //PROJEKT_CHARM_H
