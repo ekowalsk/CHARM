@@ -70,32 +70,47 @@ CMakeFiles/projekt.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/projekt.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ewa/Dokumenty/EDAMI/projekt/main.cpp -o CMakeFiles/projekt.dir/main.cpp.s
 
-CMakeFiles/projekt.dir/src/Node.cpp.o: CMakeFiles/projekt.dir/flags.make
-CMakeFiles/projekt.dir/src/Node.cpp.o: ../src/Node.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ewa/Dokumenty/EDAMI/projekt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/projekt.dir/src/Node.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/projekt.dir/src/Node.cpp.o -c /home/ewa/Dokumenty/EDAMI/projekt/src/Node.cpp
+CMakeFiles/projekt.dir/src/CharmNode.cpp.o: CMakeFiles/projekt.dir/flags.make
+CMakeFiles/projekt.dir/src/CharmNode.cpp.o: ../src/CharmNode.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ewa/Dokumenty/EDAMI/projekt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/projekt.dir/src/CharmNode.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/projekt.dir/src/CharmNode.cpp.o -c /home/ewa/Dokumenty/EDAMI/projekt/src/CharmNode.cpp
 
-CMakeFiles/projekt.dir/src/Node.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/projekt.dir/src/Node.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ewa/Dokumenty/EDAMI/projekt/src/Node.cpp > CMakeFiles/projekt.dir/src/Node.cpp.i
+CMakeFiles/projekt.dir/src/CharmNode.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/projekt.dir/src/CharmNode.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ewa/Dokumenty/EDAMI/projekt/src/CharmNode.cpp > CMakeFiles/projekt.dir/src/CharmNode.cpp.i
 
-CMakeFiles/projekt.dir/src/Node.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/projekt.dir/src/Node.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ewa/Dokumenty/EDAMI/projekt/src/Node.cpp -o CMakeFiles/projekt.dir/src/Node.cpp.s
+CMakeFiles/projekt.dir/src/CharmNode.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/projekt.dir/src/CharmNode.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ewa/Dokumenty/EDAMI/projekt/src/CharmNode.cpp -o CMakeFiles/projekt.dir/src/CharmNode.cpp.s
+
+CMakeFiles/projekt.dir/src/Charm.cpp.o: CMakeFiles/projekt.dir/flags.make
+CMakeFiles/projekt.dir/src/Charm.cpp.o: ../src/Charm.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ewa/Dokumenty/EDAMI/projekt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/projekt.dir/src/Charm.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/projekt.dir/src/Charm.cpp.o -c /home/ewa/Dokumenty/EDAMI/projekt/src/Charm.cpp
+
+CMakeFiles/projekt.dir/src/Charm.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/projekt.dir/src/Charm.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ewa/Dokumenty/EDAMI/projekt/src/Charm.cpp > CMakeFiles/projekt.dir/src/Charm.cpp.i
+
+CMakeFiles/projekt.dir/src/Charm.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/projekt.dir/src/Charm.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ewa/Dokumenty/EDAMI/projekt/src/Charm.cpp -o CMakeFiles/projekt.dir/src/Charm.cpp.s
 
 # Object files for target projekt
 projekt_OBJECTS = \
 "CMakeFiles/projekt.dir/main.cpp.o" \
-"CMakeFiles/projekt.dir/src/Node.cpp.o"
+"CMakeFiles/projekt.dir/src/CharmNode.cpp.o" \
+"CMakeFiles/projekt.dir/src/Charm.cpp.o"
 
 # External object files for target projekt
 projekt_EXTERNAL_OBJECTS =
 
 projekt: CMakeFiles/projekt.dir/main.cpp.o
-projekt: CMakeFiles/projekt.dir/src/Node.cpp.o
+projekt: CMakeFiles/projekt.dir/src/CharmNode.cpp.o
+projekt: CMakeFiles/projekt.dir/src/Charm.cpp.o
 projekt: CMakeFiles/projekt.dir/build.make
 projekt: CMakeFiles/projekt.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ewa/Dokumenty/EDAMI/projekt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable projekt"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ewa/Dokumenty/EDAMI/projekt/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable projekt"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/projekt.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

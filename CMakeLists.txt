@@ -3,6 +3,6 @@ project(projekt)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(projekt main.cpp include/Node.h src/Node.cpp)
+add_executable(projekt main.cpp include/CharmNode.h src/CharmNode.cpp include/Charm.h src/Charm.cpp)
 
 include_directories(./include)

@@ -86,13 +86,19 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/include/Node.h">
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/include/Charm.h">
+			<Option target="projekt"/>
+		</Unit>
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/include/CharmNode.h">
 			<Option target="projekt"/>
 		</Unit>
 		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/main.cpp">
 			<Option target="projekt"/>
 		</Unit>
-		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/src/Node.cpp">
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/src/Charm.cpp">
+			<Option target="projekt"/>
+		</Unit>
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/src/CharmNode.cpp">
 			<Option target="projekt"/>
 		</Unit>
 		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/CMakeLists.txt">

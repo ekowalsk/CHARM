@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/projekt.dir/main.cpp.o CMakeFiles/projekt.dir/src/Node.cpp.o  -o projekt 
+/usr/bin/c++  -g   CMakeFiles/projekt.dir/main.cpp.o CMakeFiles/projekt.dir/src/CharmNode.cpp.o CMakeFiles/projekt.dir/src/Charm.cpp.o  -o projekt 

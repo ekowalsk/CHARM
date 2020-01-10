@@ -150,32 +150,59 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-src/Node.o: src/Node.cpp.o
+src/Charm.o: src/Charm.cpp.o
 
-.PHONY : src/Node.o
+.PHONY : src/Charm.o
 
 # target to build an object file
-src/Node.cpp.o:
-	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/Node.cpp.o
-.PHONY : src/Node.cpp.o
+src/Charm.cpp.o:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/Charm.cpp.o
+.PHONY : src/Charm.cpp.o
 
-src/Node.i: src/Node.cpp.i
+src/Charm.i: src/Charm.cpp.i
 
-.PHONY : src/Node.i
+.PHONY : src/Charm.i
 
 # target to preprocess a source file
-src/Node.cpp.i:
-	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/Node.cpp.i
-.PHONY : src/Node.cpp.i
+src/Charm.cpp.i:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/Charm.cpp.i
+.PHONY : src/Charm.cpp.i
 
-src/Node.s: src/Node.cpp.s
+src/Charm.s: src/Charm.cpp.s
 
-.PHONY : src/Node.s
+.PHONY : src/Charm.s
 
 # target to generate assembly for a file
-src/Node.cpp.s:
-	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/Node.cpp.s
-.PHONY : src/Node.cpp.s
+src/Charm.cpp.s:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/Charm.cpp.s
+.PHONY : src/Charm.cpp.s
+
+src/CharmNode.o: src/CharmNode.cpp.o
+
+.PHONY : src/CharmNode.o
+
+# target to build an object file
+src/CharmNode.cpp.o:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/CharmNode.cpp.o
+.PHONY : src/CharmNode.cpp.o
+
+src/CharmNode.i: src/CharmNode.cpp.i
+
+.PHONY : src/CharmNode.i
+
+# target to preprocess a source file
+src/CharmNode.cpp.i:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/CharmNode.cpp.i
+.PHONY : src/CharmNode.cpp.i
+
+src/CharmNode.s: src/CharmNode.cpp.s
+
+.PHONY : src/CharmNode.s
+
+# target to generate assembly for a file
+src/CharmNode.cpp.s:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/CharmNode.cpp.s
+.PHONY : src/CharmNode.cpp.s
 
 # Help Target
 help:
@@ -189,9 +216,12 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... src/Node.o"
-	@echo "... src/Node.i"
-	@echo "... src/Node.s"
+	@echo "... src/Charm.o"
+	@echo "... src/Charm.i"
+	@echo "... src/Charm.s"
+	@echo "... src/CharmNode.o"
+	@echo "... src/CharmNode.i"
+	@echo "... src/CharmNode.s"
 .PHONY : help
 
 
