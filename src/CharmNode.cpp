@@ -111,10 +111,10 @@ void CharmNode::removeChildren(){
     children->clear();
 }
 
-void CharmNode::updateItemSet(item_set * itemSet){
-    this->itemSet = unionItemSet(this->itemSet, itemSet);
-    for (auto child = children-> begin(); child != children->end(); child++)
-        child->second->updateItemSet(itemSet);
+void CharmNode::updateItemSet(item_set * updateItemSet){
+    setItemSet(unionItemSet(this->itemSet, updateItemSet));
+    for (auto & child : *children)
+        child.second->updateItemSet(updateItemSet);
 }
 
 int CharmNode::getHash(tid_list * tidList){
