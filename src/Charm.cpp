@@ -1,7 +1,6 @@
 #include "Charm.h"
 //TODO destruktor - usuwanie itemset
 Charm::Charm() {
-    this->root = new CharmNode(nullptr, nullptr, nullptr);
     closedItemsets = std::unordered_map<int, std::list<std::pair<CharmNode::item_set *, int>>>();
 }
 
@@ -85,6 +84,4 @@ void Charm::printClosedItemsets(){
     }
 }
 
-Charm::~Charm(){
-    delete root;
-}
+Charm::~Charm(){}

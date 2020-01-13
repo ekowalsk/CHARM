@@ -10,7 +10,6 @@ class Charm {
 public:
     typedef std::unordered_map<int, std::list<std::pair<CharmNode::item_set *, int>>> closedItemsetsmap;
 private:
-    CharmNode * root;
     closedItemsetsmap closedItemsets; //unordered_multimap<hashValue,list<closedSet, support>>
 
     void charmExtend(CharmNode ** rootNode, int minSupport);
