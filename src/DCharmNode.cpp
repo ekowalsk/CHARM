@@ -166,6 +166,26 @@ bool DCharmNode::isItemSetContained(item_set * contains, item_set * contained){
     return true;
 }
 
+bool DCharmNode::equalsDiffSet(DCharmNode *node){
+    if (diffSet->size() != node->diffSet->size())
+        return false;
+    for (auto tidIt1 = diffSet->begin(), tidIt2 = node->diffSet->begin(); tidIt1 != diffSet->end(); tidIt1++, tidIt2++){
+        if (*tidIt1 != *tidIt2)
+            return false;
+    }
+    return true;
+}
+
+bool DCharmNode::containsDiffSet(DCharmNode *node){
+    for (auto tidIt1 = node->diffSet->begin(), tidIt2 = diffSet->begin(); tidIt1 != node->diffSet->end(); tidIt1++){
+        while (tidIt2 != diffSet->end() && *tidIt2 < *tidIt1)
+            tidIt2++;
+        if (*tidIt1 != *tidIt2)
+            return false;
+    }
+    return true;
+}
+
 bool DCharmNode::hasChildren(){
     return !children->empty();
 }

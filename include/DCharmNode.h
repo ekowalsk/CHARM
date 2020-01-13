@@ -54,8 +54,8 @@ public:
     int getSupport();
 
     static bool isItemSetContained(item_set * contains, item_set * contained);
-    bool equalsTidList(DCharmNode *node);
-    bool containsTidList(DCharmNode *node);
+    bool equalsDiffSet(DCharmNode *node);
+    bool containsDiffSet(DCharmNode *node);
     bool hasChildren();
 
     int static calculateHash(DCharmNode * nodeX, DCharmNode * nodeY);
