@@ -175,5 +175,6 @@ CharmNode::~CharmNode() {
         delete tidList;
     if (parent != nullptr)
         delete parent;
-    delete children;
+    if (children != nullptr)
+        delete children;
 }
