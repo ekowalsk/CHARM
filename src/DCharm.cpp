@@ -30,6 +30,9 @@ void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport){
 
         if(!isSubsumed(node))
             insertClosedSet(node);
+        else
+            if (node != childIterator->second)
+                delete node;
     }
 }
 
@@ -80,5 +83,12 @@ void DCharm::printClosedItemsets(){
         for (auto closedItemSet : element.second){
             DCharmNode::printItemSet(closedItemSet.first);
         }
+    }
+}
+
+DCharm::~DCharm(){
+    for (const auto& closedItemsetsMapElement : closedItemsets){
+        for (auto closedItemset: closedItemsetsMapElement.second)
+           delete closedItemset.first;
     }
 }

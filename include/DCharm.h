@@ -17,6 +17,7 @@ private:
     bool isSubsumed(DCharmNode * node);
 public:
     DCharm();
+    ~DCharm();
     closedItemsetsmap dcharm(DCharmNode ** rootNode, int minSupport);
     void printClosedItemsets();
 };
