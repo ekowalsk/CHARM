@@ -204,6 +204,60 @@ src/CharmNode.cpp.s:
 	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/CharmNode.cpp.s
 .PHONY : src/CharmNode.cpp.s
 
+src/DCharm.o: src/DCharm.cpp.o
+
+.PHONY : src/DCharm.o
+
+# target to build an object file
+src/DCharm.cpp.o:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/DCharm.cpp.o
+.PHONY : src/DCharm.cpp.o
+
+src/DCharm.i: src/DCharm.cpp.i
+
+.PHONY : src/DCharm.i
+
+# target to preprocess a source file
+src/DCharm.cpp.i:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/DCharm.cpp.i
+.PHONY : src/DCharm.cpp.i
+
+src/DCharm.s: src/DCharm.cpp.s
+
+.PHONY : src/DCharm.s
+
+# target to generate assembly for a file
+src/DCharm.cpp.s:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/DCharm.cpp.s
+.PHONY : src/DCharm.cpp.s
+
+src/DCharmNode.o: src/DCharmNode.cpp.o
+
+.PHONY : src/DCharmNode.o
+
+# target to build an object file
+src/DCharmNode.cpp.o:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/DCharmNode.cpp.o
+.PHONY : src/DCharmNode.cpp.o
+
+src/DCharmNode.i: src/DCharmNode.cpp.i
+
+.PHONY : src/DCharmNode.i
+
+# target to preprocess a source file
+src/DCharmNode.cpp.i:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/DCharmNode.cpp.i
+.PHONY : src/DCharmNode.cpp.i
+
+src/DCharmNode.s: src/DCharmNode.cpp.s
+
+.PHONY : src/DCharmNode.s
+
+# target to generate assembly for a file
+src/DCharmNode.cpp.s:
+	$(MAKE) -f CMakeFiles/projekt.dir/build.make CMakeFiles/projekt.dir/src/DCharmNode.cpp.s
+.PHONY : src/DCharmNode.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -222,6 +276,12 @@ help:
 	@echo "... src/CharmNode.o"
 	@echo "... src/CharmNode.i"
 	@echo "... src/CharmNode.s"
+	@echo "... src/DCharm.o"
+	@echo "... src/DCharm.i"
+	@echo "... src/DCharm.s"
+	@echo "... src/DCharmNode.o"
+	@echo "... src/DCharmNode.i"
+	@echo "... src/DCharmNode.s"
 .PHONY : help
 
 

@@ -6,21 +6,19 @@
 
 #IncludeRegexTransform: 
 
-.././include/Charm.h
+.././include/DCharm.h
 unordered_map
 -
-CharmNode.h
-.././include/CharmNode.h
+DCharmNode.h
+.././include/DCharmNode.h
 
-.././include/CharmNode.h
+.././include/DCharmNode.h
 list
 -
 map
 -
 
-/home/ewa/Dokumenty/EDAMI/projekt/main.cpp
-iostream
--
-Charm.h
-/home/ewa/Dokumenty/EDAMI/projekt/Charm.h
+/home/ewa/Dokumenty/EDAMI/projekt/src/DCharm.cpp
+DCharm.h
+/home/ewa/Dokumenty/EDAMI/projekt/src/DCharm.h
 

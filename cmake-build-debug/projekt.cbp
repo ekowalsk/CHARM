@@ -92,6 +92,12 @@
 		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/include/CharmNode.h">
 			<Option target="projekt"/>
 		</Unit>
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/include/DCharm.h">
+			<Option target="projekt"/>
+		</Unit>
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/include/DCharmNode.h">
+			<Option target="projekt"/>
+		</Unit>
 		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/main.cpp">
 			<Option target="projekt"/>
 		</Unit>
@@ -99,6 +105,12 @@
 			<Option target="projekt"/>
 		</Unit>
 		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/src/CharmNode.cpp">
+			<Option target="projekt"/>
+		</Unit>
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/src/DCharm.cpp">
+			<Option target="projekt"/>
+		</Unit>
+		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/src/DCharmNode.cpp">
 			<Option target="projekt"/>
 		</Unit>
 		<Unit filename="/home/ewa/Dokumenty/EDAMI/projekt/CMakeLists.txt">

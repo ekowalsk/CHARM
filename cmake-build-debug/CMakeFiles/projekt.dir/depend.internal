@@ -4,6 +4,8 @@
 CMakeFiles/projekt.dir/main.cpp.o
  .././include/Charm.h
  .././include/CharmNode.h
+ .././include/DCharm.h
+ .././include/DCharmNode.h
  /home/ewa/Dokumenty/EDAMI/projekt/main.cpp
 CMakeFiles/projekt.dir/src/Charm.cpp.o
  .././include/Charm.h
@@ -12,3 +14,10 @@ CMakeFiles/projekt.dir/src/Charm.cpp.o
 CMakeFiles/projekt.dir/src/CharmNode.cpp.o
  .././include/CharmNode.h
  /home/ewa/Dokumenty/EDAMI/projekt/src/CharmNode.cpp
+CMakeFiles/projekt.dir/src/DCharm.cpp.o
+ .././include/DCharm.h
+ .././include/DCharmNode.h
+ /home/ewa/Dokumenty/EDAMI/projekt/src/DCharm.cpp
+CMakeFiles/projekt.dir/src/DCharmNode.cpp.o
+ .././include/DCharmNode.h
+ /home/ewa/Dokumenty/EDAMI/projekt/src/DCharmNode.cpp
