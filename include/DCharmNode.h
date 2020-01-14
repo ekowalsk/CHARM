@@ -21,6 +21,7 @@ private:
 
     int calculateSupport(DCharmNode * parentNode);
     int getHashOfDiffset();
+    int calculateHash();
 
     static item_set * copyItemSet(const item_set * source);
     static item_set * unionItemSet(item_set * itemSet1, item_set * itemSet2);
@@ -29,11 +30,11 @@ private:
     static diff_set * differenceDiffSet(diff_set * diffSet1, diff_set * diffSet2);
 
 public:
-    DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int hash, int support=-1);
+    DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support=-1);
     ~DCharmNode();
 
     static item_set * unionItemSet(const DCharmNode * node1, const DCharmNode * node2);
-    static diff_set * getDiffSet(const DCharmNode * nod1, const DCharmNode * node2);
+    static diff_set * getDiffSet(const DCharmNode * node1, const DCharmNode * node2);
 
     childIterator getChildrenBegin();
     childIterator getChildrenEnd();
@@ -42,7 +43,6 @@ public:
     diff_set * getDiffSet();
 
     void setItemSet(item_set * itemSet);
-    void setSupport (int support);
 
     void insertChild(DCharmNode * child);
     void removeChild(childIterator childIt);
@@ -57,8 +57,6 @@ public:
     bool equalsDiffSet(DCharmNode *node);
     bool containsDiffSet(DCharmNode *node);
     bool hasChildren();
-
-    int static calculateHash(DCharmNode * nodeX, DCharmNode * nodeY);
 
     void static printItemSet(item_set * itemSet);
 };

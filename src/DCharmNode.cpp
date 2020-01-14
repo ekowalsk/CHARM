@@ -1,30 +1,32 @@
 #include <iostream>
 #include "DCharmNode.h"
 
-DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int hash, int support) {
+DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support) {
     if (itemSet != nullptr) {
         this->itemSet = copyItemSet(itemSet);
         this->itemSet->sort();
     }
     else
         this->itemSet = nullptr;
+
     if (diffSet != nullptr) {
         this->diffSet = copyDiffSet(diffSet);
         this->diffSet->sort();
     }
     else
         this->diffSet = nullptr;
+
     this->parent = parent;
 
     if (support == -1 && parent != nullptr)
         this->support = calculateSupport(parent);
+    else if (support == -2)
+        this->support = diffSet->size();
     else if (parent == nullptr)
         this->support = 0;
-    else
-        this->support = support;
 
-    this->hashValue = hash;
 
+    hashValue = calculateHash();
     children = new std::multimap<int, DCharmNode *>();
 }
 
@@ -32,15 +34,18 @@ int DCharmNode::calculateSupport(DCharmNode * parentNode){
     return parentNode->support - diffSet->size();
 }
 
-int DCharmNode::calculateHash(DCharmNode * nodeX, DCharmNode * nodeY){
-    diff_set * XYdiffSet = differenceDiffSet(nodeX->diffSet, nodeY->diffSet);
-    int returnValue = nodeX->getHashOfDiffset();
-    for (auto &tid : * XYdiffSet)
+int DCharmNode::calculateHash(){
+    if (parent == nullptr)
+        return 0;
+    int returnValue = parent->getHashOfDiffset();
+    for (auto &tid : *diffSet)
         returnValue -= tid;
     return returnValue;
 }
 
 int DCharmNode::getHashOfDiffset(){
+    if (diffSet == nullptr)
+        return 0;
     int hash = 0;
     for (auto &tid : *diffSet)
         hash += tid;
@@ -83,7 +88,7 @@ DCharmNode::diff_set * DCharmNode::differenceDiffSet(diff_set * diffSet1, diff_s
     auto returnedDiffSet = new diff_set();
     auto diffSetIterator1 = diffSet1->begin();
     for (auto &tid : *diffSet2){
-        while (diffSetIterator1 != diffSet1->end() && *diffSetIterator1  < tid)
+        while (diffSetIterator1 != diffSet1->end() && *diffSetIterator1 < tid)
             diffSetIterator1++;
         if (*diffSetIterator1 == tid)
             continue;
@@ -99,7 +104,7 @@ DCharmNode::item_set * DCharmNode::unionItemSet(const DCharmNode * node1, const 
 }
 
 DCharmNode::diff_set * DCharmNode::getDiffSet(const DCharmNode * node1, const DCharmNode * node2){
-    return differenceDiffSet(node1->itemSet, node2->itemSet);
+    return differenceDiffSet(node1->diffSet, node2->diffSet);
 }
 
 DCharmNode::childIterator DCharmNode::getChildrenBegin(){
@@ -114,18 +119,10 @@ DCharmNode::item_set * DCharmNode::getItemSet(){
     return itemSet;
 }
 
-DCharmNode::diff_set * DCharmNode::getDiffSet(){
-    return diffSet;
-}
-
 void DCharmNode::setItemSet(item_set * itSet){
     delete this->itemSet;
     this->itemSet = copyItemSet(itSet);
     this->itemSet->sort();
-}
-
-void DCharmNode::setSupport (int support){
-    this->support = support;
 }
 
 void DCharmNode::removeChild(childIterator childIt){
@@ -203,5 +200,6 @@ DCharmNode::~DCharmNode(){
         delete diffSet;
     if (parent != nullptr)
         delete parent;
-    delete children;
+    if (children != nullptr)
+        delete children;
 }
