@@ -19,6 +19,7 @@ private:
     bool isSubsumed(CharmNode::item_set * itemSet, CharmNode::tid_list * tidList);
 public:
     Charm();
+    ~Charm();
     closedItemsetsmap charm(CharmNode ** rootNode, int minSupport);
     void printClosedItemsets();
 };

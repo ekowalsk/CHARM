@@ -1,5 +1,5 @@
 #include "Charm.h"
-//TODO destruktor - usuwanie itemset
+
 Charm::Charm() {
     closedItemsets = std::unordered_map<int, std::list<std::pair<CharmNode::item_set *, int>>>();
 }
@@ -17,10 +17,11 @@ void Charm::charmExtend(CharmNode ** rootNode, int minSupport){
         for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd();){
             auto savedIterator= rNeighbourIterator;
             ++savedIterator;
-            itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
             tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
-            if (tidListIntersection->size() >= minSupport)
+            if (tidListIntersection->size() >= minSupport) {
+                itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
                 charmProperty(rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator);
+            }
             rNeighbourIterator = savedIterator;
         }
         if(childIterator->second->hasChildren()) {
@@ -30,6 +31,9 @@ void Charm::charmExtend(CharmNode ** rootNode, int minSupport){
 
         if(!isSubsumed(itemSetUnion, tidListIntersection))
             insertClosedSet(itemSetUnion, tidListIntersection);
+        else
+            delete itemSetUnion;
+        delete tidListIntersection;
     }
 }
 void Charm::charmProperty(CharmNode ** rootNode, CharmNode::item_set * X, CharmNode::tid_list * Y, CharmNode::childIterator * nodeIiterator, CharmNode::childIterator * nodeJiterator){
@@ -84,3 +88,9 @@ void Charm::printClosedItemsets(){
     }
 }
 
+Charm::~Charm(){
+    for (const auto& closedItemsetsMapElement : closedItemsets){
+        for (auto closedItemset: closedItemsetsMapElement.second)
+            delete closedItemset.first;
+    }
+}
