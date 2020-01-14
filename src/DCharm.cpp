@@ -72,7 +72,6 @@ bool DCharm::isSubsumed(DCharmNode * node){
             }
         }
         return false;
-
     } catch (std::out_of_range& e){
         return false;
     }

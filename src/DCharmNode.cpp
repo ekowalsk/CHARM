@@ -25,7 +25,6 @@ DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffS
     else if (parent == nullptr)
         this->support = 0;
 
-
     hashValue = calculateHash();
     children = new std::multimap<int, DCharmNode *>();
 }
