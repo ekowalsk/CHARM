@@ -40,7 +40,6 @@ public:
     childIterator getChildrenEnd();
 
     item_set * getItemSet();
-    diff_set * getDiffSet();
 
     void setItemSet(item_set * itemSet);
 
