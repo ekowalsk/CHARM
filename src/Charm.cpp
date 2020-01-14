@@ -77,11 +77,10 @@ bool Charm::isSubsumed(CharmNode::item_set * itemSet, CharmNode::tid_list * tidL
 }
 
 void Charm::printClosedItemsets(){
-    for (auto element : closedItemsets){
+    for (const auto& element : closedItemsets){
         for (auto closedItemSet : element.second){
             CharmNode::printItemSet(closedItemSet.first);
         }
     }
 }
 
-Charm::~Charm(){}
