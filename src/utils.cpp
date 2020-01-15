@@ -186,11 +186,11 @@ void displayHelp(const bool& wrongArg)
         std::cerr << "Unrecognized argument provided!" << std::endl;
     std::cout << "Available command line arguments:" << std::endl;
     std::cout << "-h,-help - print help" << std::endl;
-    std::cout << "-d,-dcharm - use dCharm instead of Charm. Defaults to false" << std::endl;
-    std::cout << "-e,-example - run example small dataset on Charm (run with -d to use dCharm). Defaults to false" << std::endl;
-    std::cout << "-m,-measure - print statistics (runtime, (d)Charm properties count). Defaults to false" << std::endl;
+    std::cout << "-d,-dcharm - use dCharm instead of Charm. Defaults to false." << std::endl;
+    std::cout << "-e,-example - run example small dataset on Charm (run with -d to use dCharm). Defaults to false." << std::endl;
+    std::cout << "-m,-measure - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
     std::cout << "-ms,-minSup <support> - minimum support value for frequent itemsets. Defaults to 10." << std::endl;
-    std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions"<< std::endl;
-    std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/mushroom" << std::endl;
-    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to lex" << std::endl;
+    std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions."<< std::endl;
+    std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/mushroom." << std::endl;
+    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to lex." << std::endl;
 }
