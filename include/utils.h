@@ -2,16 +2,28 @@
 #define CHARM_UTILS_H
 
 #include <fstream>
-#include <set>
+#include <list>
+#include <map>
 #include <vector>
+
+typedef struct Parameter {
+    std::string path;
+    int minSup;
+    int startSort;
+    bool example;
+    bool dCharm;
+    bool measure;
+} Parameter;
 
 std::istream& getLine(std::istream& is, std::string& t);
 
-std::vector<std::set<int>> readTransactions(const std::string& filepath);
+std::vector<std::list<int>> readTransactions(const std::string& filepath);
 
 std::vector<std::string> readNames(const std::string& filepath);
 
-bool parseArgs(const std::vector<std::string>& args, std::string& dataset, int& startSort, bool& example, bool& dCharm, bool& measure);
+std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& findTwoSets);
+
+bool parseArgs(const std::vector<std::string>& args, Parameter& params);
 
 void displayHelp(const bool& wrongArg);
 
