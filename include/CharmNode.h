@@ -36,7 +36,6 @@ public:
     tid_list * getTidList();
 
     void setItemSet(item_set * itemSet);
-    void setTidList(tid_list * tidList);
 
     // children <*list<int>, Node> - if na mode
     void insertChild(CharmNode * child);
