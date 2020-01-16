@@ -105,6 +105,11 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
     return result;
 }
 
+void displayStats(Stats& stats) {
+    std::cout << "Frequent itemsets mining time (ms): " << stats.frequentMiningTime << std::endl;
+    std::cout << "Algorithm time (ms): " << stats.algorithmTime << std::endl;
+}
+
 bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
     for (std::vector<std::string>::size_type i = 0; i < args.size(); ++i) {
         if (args[i] == "-h" || args[i] == "-help") {
@@ -113,8 +118,6 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
         }
         else if (args[i] == "-d" || args[i] == "-dcharm")
             params.dCharm = true;
-        else if (args[i] == "-e" || args[i] == "-example")
-            params.example = true;
         else if (args[i] == "-m" || args[i] == "-measure")
             params.measure = true;
         else if (args[i] == "-ms" || args[i] == "-minSup") {
@@ -163,8 +166,8 @@ void displayHelp(const bool& wrongArg) {
     std::cout << "-d,-dcharm - use dCharm instead of Charm. Defaults to false." << std::endl;
     std::cout << "-e,-example - run example small dataset on Charm (run with -d to use dCharm). Defaults to false." << std::endl;
     std::cout << "-m,-measure - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
-    std::cout << "-ms,-minSup <support> - minimum support value for frequent itemsets. Defaults to 10." << std::endl;
-    std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions."<< std::endl;
-    std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/mushroom." << std::endl;
-    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to lex." << std::endl;
+    std::cout << "-ms,-minSup <support> - minimum support value for frequent itemsets. Defaults to 2." << std::endl;
+    std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions. Available names: example, mushroom, nursery, car."<< std::endl;
+    std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/example (example small dataset)." << std::endl;
+    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to asc." << std::endl;
 }
