@@ -2,7 +2,7 @@
 
 #include "CharmNode.h"
 
-CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode) {
+CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, Mode mode) {
     if (itemSet != nullptr)
         this->itemSet = copyItemSet(itemSet);
     else
@@ -12,7 +12,14 @@ CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList,
     else
         this->tidList = nullptr;
     this->parent = parent;
-    children = new std::multimap<int, CharmNode *>();
+    if (mode == Mode::sortIncSup || mode == Mode::sortDecSUp) {
+        iChildren = new std::multimap<int, CharmNode *>();
+        sChildren = nullptr;
+    }
+    else {
+        iChildren = nullptr;
+        sChildren = new std::multimap<std::string, CharmNode *>();
+    }
 }
 
 CharmNode::item_set * CharmNode::copyItemSet(const item_set * source){
@@ -70,11 +77,19 @@ CharmNode::tid_list * CharmNode::intersectedTidList(const CharmNode * node1, con
     return intersectTidList(node1->tidList, node2->tidList);
 }
 
-CharmNode::childIterator CharmNode::getChildrenBegin(){
-    return children->begin();
+CharmNode::childIntIterator CharmNode::getIChildrenBegin(){
+    return iChildren->begin();
 }
-CharmNode::childIterator CharmNode::getChildrenEnd(){
-    return  children->end();
+CharmNode::childIntIterator CharmNode::getIChildrenEnd(){
+    return  iChildren->end();
+}
+
+CharmNode::childStringIterator CharmNode::getSChildrenBegin(){
+    return sChildren->begin();
+}
+
+CharmNode::childStringIterator CharmNode::getSChildrenEnd(){
+    return sChildren->end();
 }
 
 CharmNode::item_set * CharmNode::getItemSet(){
@@ -91,21 +106,23 @@ void CharmNode::setItemSet(item_set * itSet){
     this->itemSet->sort();
 }
 
-void CharmNode::insertChild(CharmNode * child){
-    children->insert({child->getSupport(), child});
+void CharmNode::insertIChild(CharmNode *child){
+    iChildren->insert({child->getSupport(), child});
 }
 
-void CharmNode::removeChild(childIterator childIt){
-    children->erase(childIt);
+void CharmNode::removeIChild(childIntIterator childIt){
+    iChildren->erase(childIt);
 }
 
-void CharmNode::removeChildren(){
-    children->clear();
+void CharmNode::removeIChildren(){
+    for (auto & iChild : *iChildren)
+        delete iChild.second;
+    iChildren->clear();
 }
 
 void CharmNode::updateItemSet(item_set * updateItemSet){
     setItemSet(unionItemSet(this->itemSet, updateItemSet));
-    for (auto & child : *children)
+    for (auto & child : *iChildren)
         child.second->updateItemSet(updateItemSet);
 }
 
@@ -150,7 +167,7 @@ bool CharmNode::containsTidList(CharmNode *node){
 }
 
 bool CharmNode::hasChildren(){
-    return !children->empty();
+    return !iChildren->empty();
 }
 
 void CharmNode::printItemSet(item_set * itemSet){
@@ -162,8 +179,7 @@ void CharmNode::printItemSet(item_set * itemSet){
 CharmNode::~CharmNode() {
     delete itemSet;
     delete tidList;
-    delete parent;
-    for (auto &child : *children)
+    for (auto &child : *iChildren)
         delete child.second;
-    delete children;
+    delete iChildren;
 }
