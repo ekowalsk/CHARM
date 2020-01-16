@@ -4,17 +4,21 @@
 #include <list>
 #include <map>
 
+
 class CharmNode {
 public:
+    enum Mode {sortIncSup, sortDecSUp, sortLex};
     typedef std::list<int> tid_list;
     typedef std::list<int> item_set;
-    typedef std::multimap<int, CharmNode *>::iterator childIterator;
+    typedef std::multimap<int, CharmNode *>::iterator childIntIterator;
+    typedef std::multimap<std::string, CharmNode *>::iterator childStringIterator;
 private:
     item_set * itemSet;
     tid_list * tidList;
 
     CharmNode * parent;
-    std::multimap<int, CharmNode *> * children; // map of pairs <support, Node>
+    std::multimap<int, CharmNode *> * iChildren; // map of pairs <support, Node>
+    std::multimap<std::string, CharmNode *> * sChildren;
 
     static item_set * copyItemSet(const item_set * source);
     static item_set * unionItemSet(item_set * itemSet1, item_set * itemSet2);
@@ -23,24 +27,25 @@ private:
     static tid_list * intersectTidList(tid_list * tidList1, tid_list * tidList2);
 
 public:
-    CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode = 1);
+    CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, Mode mode = Mode::sortIncSup);
     ~CharmNode();
 
     static item_set * unionItemSet(const CharmNode * node1, const CharmNode * node2);
     static tid_list * intersectedTidList(const CharmNode * node1, const CharmNode * node2);
 
-    childIterator getChildrenBegin();
-    childIterator getChildrenEnd();
+    childIntIterator getIChildrenBegin();
+    childIntIterator getIChildrenEnd();
+    childStringIterator getSChildrenBegin();
+    childStringIterator getSChildrenEnd();
 
     item_set * getItemSet();
     tid_list * getTidList();
 
     void setItemSet(item_set * itemSet);
 
-    // children <*list<int>, Node> - if na mode
-    void insertChild(CharmNode * child);
-    void removeChild(childIterator childIt);
-    void removeChildren();
+    void insertIChild(CharmNode *child);
+    void removeIChild(childIntIterator childIt);
+    void removeIChildren();
 
     void updateItemSet(item_set * itemSet);
 
