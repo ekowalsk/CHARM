@@ -5,13 +5,13 @@
 CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode) {
     if (itemSet != nullptr) {
         this->itemSet = copyItemSet(itemSet);
-        this->itemSet->sort();
+        //this->itemSet->sort();
     }
     else
         this->itemSet = nullptr;
     if (tidList != nullptr) {
         this->tidList = copyTidList(tidList);
-        this->tidList->sort();
+        //this->tidList->sort();
     }
     else
         this->tidList = nullptr;
@@ -27,17 +27,20 @@ CharmNode::item_set * CharmNode::copyItemSet(const item_set * source){
 }
 
 CharmNode::item_set * CharmNode::unionItemSet(item_set * itemSet1, item_set * itemSet2){
-    itemSet1->sort();
-    itemSet2->sort();
     auto * itemSetUnion = copyItemSet(itemSet1);
-    auto itemIterator = itemSet1->begin();
+    auto itemIterator = itemSetUnion->begin();
+    item_set::iterator savedIterator;
     for (auto &item : *itemSet2){
-        while (itemIterator != itemSet1->end() && *itemIterator < item)
+        while (itemIterator != itemSetUnion->end() && *itemIterator < item){
+            savedIterator = itemIterator;
             itemIterator++;
-        if (*itemIterator == item)
-            continue;
-        else
-            itemSetUnion->push_back(item);
+        }
+        if (itemIterator == itemSetUnion->end()){
+            if (*savedIterator != item)
+                itemSetUnion->insert(itemIterator, item);
+        }
+        else if (*itemIterator != item)
+            itemSetUnion->insert(itemIterator, item);
     }
     return itemSetUnion;
 }
