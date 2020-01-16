@@ -1,0 +1,3 @@
+mushroom - https://archive.ics.uci.edu/ml/datasets/Mushroom
+nursery - https://archive.ics.uci.edu/ml/datasets/Nursery
+car - https://archive.ics.uci.edu/ml/datasets/Car+Evaluation
