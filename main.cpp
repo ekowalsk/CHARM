@@ -12,7 +12,7 @@ node->insertChild(new CharmNode(node, new CharmNode::item_set ({4}), new CharmNo
 node->insertChild(new CharmNode(node, new CharmNode::item_set ({3}), new CharmNode::tid_list ({1,3,4,5})));
 
 Charm charm = Charm();
-charm.charm(&node, 3);
+charm.charm(&node, 2);
 charm.printClosedItemsets();
 
 DCharmNode * dNode = new DCharmNode(nullptr, nullptr, nullptr);
@@ -23,7 +23,7 @@ dNode->insertChild(new DCharmNode(dNode, new DCharmNode::item_set ({4}), new DCh
 dNode->insertChild(new DCharmNode(dNode, new DCharmNode::item_set ({3}), new DCharmNode::diff_set ({1,3,4,5}), -2));
 
 DCharm dcharm = DCharm();
-dcharm.dcharm(&dNode, 3);
+dcharm.dcharm(&dNode, 2);
 dcharm.printClosedItemsets();
 return 0;
 }

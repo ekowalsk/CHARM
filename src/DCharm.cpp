@@ -19,7 +19,7 @@ void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport){
             DCharmNode::item_set * itemSetUnion = DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
             DCharmNode::diff_set * diffSet = DCharmNode::getDiffSet(rNeighbourIterator->second, childIterator->second);
             node = new DCharmNode(childIterator->second, itemSetUnion, diffSet);
-            if (node->getSupport() >= minSupport)
+            if (node->getSupport() > minSupport)
                 charmProperty(rootNode, itemSetUnion, diffSet, &childIterator, &rNeighbourIterator);
             rNeighbourIterator = savedIterator;
         }

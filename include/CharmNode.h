@@ -23,7 +23,7 @@ private:
     static tid_list * intersectTidList(tid_list * tidList1, tid_list * tidList2);
 
 public:
-    CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList);
+    CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode = 1);
     ~CharmNode();
 
     static item_set * unionItemSet(const CharmNode * node1, const CharmNode * node2);
@@ -38,6 +38,7 @@ public:
     void setItemSet(item_set * itemSet);
     void setTidList(tid_list * tidList);
 
+    // children <*list<int>, Node> - if na mode
     void insertChild(CharmNode * child);
     void removeChild(childIterator childIt);
     void removeChildren();

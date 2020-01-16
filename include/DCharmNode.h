@@ -9,6 +9,7 @@ public:
     typedef std::list<int> diff_set;
     typedef std::list<int> item_set;
     typedef std::multimap<int, DCharmNode *>::iterator childIterator;
+    //TODO map <item_set *, DCharmNode*>
 private:
     item_set * itemSet;
     diff_set * diffSet;

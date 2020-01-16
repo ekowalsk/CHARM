@@ -2,7 +2,7 @@
 
 #include "CharmNode.h"
 
-CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList) {
+CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode) {
     if (itemSet != nullptr) {
         this->itemSet = copyItemSet(itemSet);
         this->itemSet->sort();
@@ -61,6 +61,8 @@ CharmNode::tid_list * CharmNode::intersectTidList(tid_list * tidList1, tid_list 
     for (auto &sourceTid : *tidList2){
         while (tidIterator1 != tidList1->end() && *tidIterator1 < sourceTid)
             tidIterator1++;
+        if (tidIterator1 == tidList1->end())
+            break;
         if (*tidIterator1 == sourceTid)
             intersectionList->push_back(sourceTid);
     }
@@ -132,7 +134,7 @@ bool CharmNode::isItemSetContained(item_set * contains, item_set * contained){
     for (auto containsIt = contains->begin(), containedIt = contained->begin(); containedIt != contained->end(); containedIt++){
         while (containsIt != contains->end() && *containsIt < *containedIt)
             containsIt++;
-        if (*containsIt != *containedIt)
+        if (containsIt == contains->end() || *containsIt != *containedIt)
             return false;
     }
     return true;
@@ -152,7 +154,7 @@ bool CharmNode::containsTidList(CharmNode *node){
     for (auto tidIt1 = node->tidList->begin(), tidIt2 = tidList->begin(); tidIt1 != node->tidList->end(); tidIt1++){
         while (tidIt2 != tidList->end() && *tidIt2 < *tidIt1)
             tidIt2++;
-        if (*tidIt1 != *tidIt2)
+        if (tidIt2 == tidList->end() || *tidIt1 != *tidIt2)
             return false;
     }
     return true;
@@ -169,12 +171,8 @@ void CharmNode::printItemSet(item_set * itemSet){
 }
 
 CharmNode::~CharmNode() {
-    if (itemSet != nullptr)
-        delete itemSet;
-    if (tidList != nullptr)
-        delete tidList;
-    if (parent != nullptr)
-        delete parent;
-    if (children != nullptr)
-        delete children;
+    delete itemSet;
+    delete tidList;
+    delete parent;
+    delete children;
 }
