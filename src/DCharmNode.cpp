@@ -135,6 +135,8 @@ void DCharmNode::removeChild(childIterator childIt){
 }
 
 void DCharmNode::removeChildren(){
+    for (auto & child : * children)
+        delete child.second;
     children->clear();
 }
 
@@ -201,7 +203,6 @@ void DCharmNode::printItemSet(item_set * itemSet){
 DCharmNode::~DCharmNode(){
     delete itemSet;
     delete diffSet;
-    delete parent;
     for (auto &child : *children)
         delete child.second;
     delete children;
