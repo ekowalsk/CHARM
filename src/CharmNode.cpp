@@ -92,8 +92,7 @@ void CharmNode::setItemSet(item_set * itSet){
 }
 
 void CharmNode::insertChild(CharmNode * child){
-    int childSupport = child->getSupport();
-    children->insert({childSupport, child});
+    children->insert({child->getSupport(), child});
 }
 
 void CharmNode::removeChild(childIterator childIt){
@@ -164,5 +163,7 @@ CharmNode::~CharmNode() {
     delete itemSet;
     delete tidList;
     delete parent;
+    for (auto &child : *children)
+        delete child.second;
     delete children;
 }

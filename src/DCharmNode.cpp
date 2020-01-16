@@ -202,5 +202,7 @@ DCharmNode::~DCharmNode(){
     delete itemSet;
     delete diffSet;
     delete parent;
+    for (auto &child : *children)
+        delete child.second;
     delete children;
 }
