@@ -3,16 +3,12 @@
 #include "CharmNode.h"
 
 CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode) {
-    if (itemSet != nullptr) {
+    if (itemSet != nullptr)
         this->itemSet = copyItemSet(itemSet);
-        //this->itemSet->sort();
-    }
     else
         this->itemSet = nullptr;
-    if (tidList != nullptr) {
+    if (tidList != nullptr)
         this->tidList = copyTidList(tidList);
-        //this->tidList->sort();
-    }
     else
         this->tidList = nullptr;
     this->parent = parent;
@@ -57,8 +53,6 @@ CharmNode::tid_list * CharmNode::copyTidList(tid_list * tidList){
 }
 
 CharmNode::tid_list * CharmNode::intersectTidList(tid_list * tidList1, tid_list * tidList2){
-    tidList1->sort();
-    tidList2->sort();
     auto intersectionList = new tid_list();
     auto tidIterator1 = tidList1->begin();
     for (auto &sourceTid : *tidList2){
@@ -95,12 +89,6 @@ void CharmNode::setItemSet(item_set * itSet){
     delete this->itemSet;
     this->itemSet = copyItemSet(itSet);
     this->itemSet->sort();
-}
-
-void CharmNode::setTidList(tid_list * tList){
-    delete this->tidList;
-    this->tidList = copyTidList(tList);
-    this->tidList->sort();
 }
 
 void CharmNode::insertChild(CharmNode * child){
@@ -146,10 +134,9 @@ bool CharmNode::isItemSetContained(item_set * contains, item_set * contained){
 bool CharmNode::equalsTidList(CharmNode *node){
     if (tidList->size() != node->tidList->size())
         return false;
-    for (auto tidIt1 = tidList->begin(), tidIt2 = node->tidList->begin(); tidIt1 != tidList->end(); tidIt1++, tidIt2++){
+    for (auto tidIt1 = tidList->begin(), tidIt2 = node->tidList->begin(); tidIt1 != tidList->end(); tidIt1++, tidIt2++)
         if (*tidIt1 != *tidIt2)
             return false;
-    }
     return true;
 }
 
@@ -169,7 +156,7 @@ bool CharmNode::hasChildren(){
 
 void CharmNode::printItemSet(item_set * itemSet){
     for (auto &item : *itemSet)
-        std::cout << item;
+        std::cout << item << " ";
     std::cout << std::endl;
 }
 
