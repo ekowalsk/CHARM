@@ -59,17 +59,20 @@ DCharmNode::item_set * DCharmNode::copyItemSet(const item_set * source){
 }
 
 DCharmNode::item_set * DCharmNode::unionItemSet(item_set * itemSet1, item_set * itemSet2){
-    itemSet1->sort();
-    itemSet2->sort();
     auto * itemSetUnion = copyItemSet(itemSet1);
-    auto itemIterator = itemSet1->begin();
+    auto itemIterator = itemSetUnion->begin();
+    item_set::iterator savedIterator;
     for (auto &item : *itemSet2){
-        while (itemIterator != itemSet1->end() && *itemIterator < item)
+        while (itemIterator != itemSetUnion->end() && *itemIterator < item){
+            savedIterator = itemIterator;
             itemIterator++;
-        if (*itemIterator == item)
-            continue;
-        else
-            itemSetUnion->push_back(item);
+        }
+        if (itemIterator == itemSetUnion->end()){
+            if (*savedIterator != item)
+                itemSetUnion->insert(itemIterator, item);
+        }
+        else if (*itemIterator != item)
+            itemSetUnion->insert(itemIterator, item);
     }
     return itemSetUnion;
 }
@@ -82,16 +85,19 @@ DCharmNode::diff_set * DCharmNode::copyDiffSet(diff_set * diffSet){
 }
 
 DCharmNode::diff_set * DCharmNode::differenceDiffSet(diff_set * diffSet1, diff_set * diffSet2){
-    diffSet1->sort();
-    diffSet2->sort();
     auto returnedDiffSet = new diff_set();
     auto diffSetIterator1 = diffSet1->begin();
+    diff_set::iterator savedIterator;
     for (auto &tid : *diffSet2){
-        while (diffSetIterator1 != diffSet1->end() && *diffSetIterator1 < tid)
+        while (diffSetIterator1 != diffSet1->end() && *diffSetIterator1 < tid) {
+            savedIterator = diffSetIterator1;
             diffSetIterator1++;
-        if (*diffSetIterator1 == tid)
-            continue;
-        else
+        }
+        if (diffSetIterator1 == diffSet1->end()) {
+            if (*savedIterator != tid)
+                returnedDiffSet->push_back(tid);
+        }
+        else if (*diffSetIterator1 != tid)
             returnedDiffSet->push_back(tid);
     }
     return returnedDiffSet;
@@ -156,7 +162,7 @@ bool DCharmNode::isItemSetContained(item_set * contains, item_set * contained){
     for (auto containsIt = contains->begin(), containedIt = contained->begin(); containedIt != contained->end(); containedIt++){
         while (containsIt != contains->end() && *containsIt < *containedIt)
             containsIt++;
-        if (*containsIt != *containedIt)
+        if (containsIt == contains->end() || *containsIt != *containedIt)
             return false;
     }
     return true;
@@ -176,7 +182,7 @@ bool DCharmNode::containsDiffSet(DCharmNode *node){
     for (auto tidIt1 = node->diffSet->begin(), tidIt2 = diffSet->begin(); tidIt1 != node->diffSet->end(); tidIt1++){
         while (tidIt2 != diffSet->end() && *tidIt2 < *tidIt1)
             tidIt2++;
-        if (*tidIt1 != *tidIt2)
+        if (tidIt2 == diffSet->end() || *tidIt1 != *tidIt2)
             return false;
     }
     return true;
@@ -188,17 +194,13 @@ bool DCharmNode::hasChildren(){
 
 void DCharmNode::printItemSet(item_set * itemSet){
     for (auto &item : *itemSet)
-        std::cout << item;
+        std::cout << item << " ";
     std::cout << std::endl;
 }
 
 DCharmNode::~DCharmNode(){
-    if (itemSet != nullptr)
-        delete itemSet;
-    if (diffSet != nullptr)
-        delete diffSet;
-    if (parent != nullptr)
-        delete parent;
-    if (children != nullptr)
-        delete children;
+    delete itemSet;
+    delete diffSet;
+    delete parent;
+    delete children;
 }
