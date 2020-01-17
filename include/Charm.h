@@ -21,7 +21,7 @@ public:
     Charm();
     ~Charm();
     closedItemsetsmap charm(CharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats);
-    void printClosedItemsets();
+    void printClosedItemsets(std::vector<std::string> namesVector);
 };
 
 #endif //PROJEKT_CHARM_H

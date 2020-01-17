@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <vector>
 #include <functional>
 
 class CharmNode {
@@ -55,6 +56,6 @@ public:
     bool containsTidList(CharmNode *node);
     bool hasChildren();
 
-    void static printItemSet(item_set * itemSet);
+    void static printItemSet(item_set * itemSet, std::vector<std::string> namesVector);
 };
 #endif //PROJEKT_CHARMNODE_H

@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <vector>
 #include <functional>
 
 class DCharmNode {
@@ -61,6 +62,6 @@ public:
     bool containsDiffSet(DCharmNode *node);
     bool hasChildren();
 
-    void static printItemSet(item_set * itemSet);
+    void static printItemSet(item_set * itemSet, std::vector<std::string>);
 };
 #endif //PROJEKT_DCHARMNODE_H

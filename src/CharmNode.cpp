@@ -125,10 +125,9 @@ bool CharmNode::hasChildren(){
     return !children->empty();
 }
 
-void CharmNode::printItemSet(item_set * itemSet){
+void CharmNode::printItemSet(item_set * itemSet, std::vector<std::string> namesVector){
     for (auto &item : *itemSet)
-        std::cout << item << " ";
-    std::cout << std::endl;
+        std::cout << namesVector[item] << " ";
 }
 
 CharmNode::~CharmNode() {

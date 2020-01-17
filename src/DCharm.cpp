@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "DCharm.h"
 
 DCharm::DCharm(){
@@ -85,10 +87,11 @@ bool DCharm::isSubsumed(DCharmNode * node){
     }
 }
 
-void DCharm::printClosedItemsets(){
+void DCharm::printClosedItemsets(std::vector<std::string> namesVector){
     for (const auto& element : closedItemsets){
         for (auto closedItemSet : element.second){
-            DCharmNode::printItemSet(closedItemSet.first);
+            DCharmNode::printItemSet(closedItemSet.first, namesVector);
+            std::cout << "   support: " << closedItemSet.second << std::endl;
         }
     }
 }

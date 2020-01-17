@@ -146,10 +146,9 @@ bool DCharmNode::hasChildren(){
     return !children->empty();
 }
 
-void DCharmNode::printItemSet(item_set * itemSet){
+void DCharmNode::printItemSet(item_set * itemSet, std::vector<std::string> namesVector){
     for (auto &item : *itemSet)
-        std::cout << item << " ";
-    std::cout << std::endl;
+        std::cout << namesVector[item] << " ";
 }
 
 DCharmNode::~DCharmNode(){

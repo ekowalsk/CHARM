@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Charm.h"
 
 Charm::Charm() {
@@ -87,10 +89,11 @@ bool Charm::isSubsumed(CharmNode::item_set * itemSet, CharmNode::tid_list * tidL
     }
 }
 
-void Charm::printClosedItemsets(){
+void Charm::printClosedItemsets(std::vector<std::string> namesVector){
     for (const auto& element : closedItemsets){
         for (auto closedItemSet : element.second){
-            CharmNode::printItemSet(closedItemSet.first);
+            CharmNode::printItemSet(closedItemSet.first, namesVector);
+            std::cout << "   support: " << closedItemSet.second << std::endl;
         }
     }
 }

@@ -6,10 +6,10 @@
 
 int main(int argc, char* argv[]) {
     Parameter params {
-        .path = "/home/ewa/Dokumenty/EDAMI/projekt/data/processed/example",
+        .path = "data\\processed\\example",
         .minSup = 2,
         .startSort = 1,
-        .dCharm = true,
+        .dCharm = false,
         .stats = false
     };
     Stats stats;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
-        charm.printClosedItemsets();
+        charm.printClosedItemsets(names);
     }
     else {
         DCharm dCharm;
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
-        dCharm.printClosedItemsets();
+        dCharm.printClosedItemsets(names);
     }
     if (params.stats)
         displayStats(stats);

@@ -19,7 +19,7 @@ public:
     DCharm();
     ~DCharm();
     closedItemsetsmap dcharm(DCharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats);
-    void printClosedItemsets();
+    void printClosedItemsets(std::vector<std::string>);
 };
 
 #endif //PROJEKT_DCHARM_H
