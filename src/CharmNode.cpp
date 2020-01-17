@@ -16,16 +16,8 @@ CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList,
             return one.front() < two.front();
         else if (sortMode < 0)
             return one.front() > two.front();
-        else {
-            for (auto it1 = one.begin(), it2 = two.begin(); ;++it1, ++it2) {
-                if (it1 == one.end())
-                    return true;
-                else if (it2 == two.end())
-                    return false;
-                else if (*it1 != *it2)
-                    return *it1 < *it2;
-            }
-        }
+        else
+            return one < two;
     };
     children = new std::multimap<std::list<int>, CharmNode*, decltype(sortFun)>(sortFun);
 }
