@@ -48,6 +48,8 @@ public:
     void removeChild(childIterator childIt);
     void removeChildren();
 
+    void sortChildrenReversed();
+
     void updateItemSet(item_set * itemSet);
 
     int getHash();
