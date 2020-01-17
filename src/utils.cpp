@@ -129,6 +129,15 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
     return result;
 }
 
+void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>> * frequentOneItemsets, std::map<std::list<int>, std::list<int>> * frequentTwoItemsets){
+    for (auto itemSet : frequentItemsets){
+        if (itemSet.first.size() == 2)
+            frequentTwoItemsets->insert(itemSet);
+        else if (itemSet.first.size() == 1)
+            frequentOneItemsets->insert(itemSet);
+    }
+}
+
 void displayStats(Stats& stats) {
     std::cout << "Frequent itemsets mining time (ms): " << stats.frequentMiningTime << std::endl;
     std::cout << "Algorithm time (ms): " << stats.algorithmTime << std::endl;

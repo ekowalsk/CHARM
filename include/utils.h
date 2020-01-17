@@ -31,6 +31,8 @@ std::vector<std::string> readNames(const std::string& filepath);
 
 std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets);
 
+void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>> * frequentOneItemsets, std::map<std::list<int>, std::list<int>> * frequentTwoItemsets);
+
 void displayStats(Stats& stats);
 
 bool parseArgs(const std::vector<std::string>& args, Parameter& params);

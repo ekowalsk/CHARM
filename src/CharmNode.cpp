@@ -92,6 +92,8 @@ void CharmNode::removeChild(childIterator childIt){
 }
 
 void CharmNode::removeChildren(){
+    for (auto & child : *children)
+        delete child.second;
     children->clear();
 }
 

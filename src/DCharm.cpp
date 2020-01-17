@@ -6,17 +6,25 @@ DCharm::DCharm(){
     closedItemsets = std::unordered_map<int, std::list<std::pair<DCharmNode::item_set *, int>>>();
 }
 
-DCharm::closedItemsetsmap DCharm::dcharm(DCharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats){
-    charmExtend(rootNode, minSupport, propertyStats);
+DCharm::closedItemsetsmap DCharm::dcharm(DCharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats, int checkTwoItemsets){
+    charmExtend(rootNode, minSupport, propertyStats, checkTwoItemsets);
     return closedItemsets;
 }
 
-void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats){
+void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats, int checkTwoItemsets){
     for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd();) {
         auto rightHandChildren = childIterator;
         for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd();){
             auto savedIterator= rNeighbourIterator;
             ++savedIterator;
+            if (checkTwoItemsets){
+                if (childIterator->second->getItemSet()->size() == 1 && rNeighbourIterator->second->getItemSet()->size() == 1) {
+                    if (!isFrequentItemset(DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second))) {
+                        rNeighbourIterator = savedIterator;
+                        continue;
+                    }
+                }
+            }
             DCharmNode::diff_set * diffSet = DCharmNode::getDiffSet(rNeighbourIterator->second, childIterator->second);
             if (childIterator->second->getSupport() - diffSet->size() > minSupport) {
                 DCharmNode::item_set * itemSetUnion = DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
@@ -25,7 +33,7 @@ void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport, std::array<unsi
             rNeighbourIterator = savedIterator;
         }
         if(childIterator->second->hasChildren())
-            charmExtend(&(childIterator->second), minSupport, propertyStats);
+            charmExtend(&(childIterator->second), minSupport, propertyStats, checkTwoItemsets);
 
         auto toCheck = childIterator++;
         if(!isSubsumed(toCheck->second))
@@ -94,6 +102,14 @@ void DCharm::printClosedItemsets(std::vector<std::string> namesVector){
             std::cout << "   support: " << closedItemSet.second << std::endl;
         }
     }
+}
+
+bool DCharm::isFrequentItemset(DCharmNode::item_set * twoItemSet){
+    return !(frequentTwoItemsets.find(*twoItemSet) == frequentTwoItemsets.end());
+}
+
+void DCharm::setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>> freqTwoItemsets){
+    this->frequentTwoItemsets = std::move(freqTwoItemsets);
 }
 
 DCharm::~DCharm(){

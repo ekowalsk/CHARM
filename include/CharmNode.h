@@ -41,7 +41,6 @@ public:
 
     void setItemSet(item_set * itemSet);
 
-    // children <*list<int>, Node> - if na mode
     void insertChild(CharmNode * child);
     void removeChild(childIterator childIt);
     void removeChildren();
