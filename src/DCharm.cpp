@@ -4,12 +4,12 @@ DCharm::DCharm(){
     closedItemsets = std::unordered_map<int, std::list<std::pair<DCharmNode::item_set *, int>>>();
 }
 
-DCharm::closedItemsetsmap DCharm::dcharm(DCharmNode ** rootNode, int minSupport){
-    charmExtend(rootNode, minSupport);
+DCharm::closedItemsetsmap DCharm::dcharm(DCharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats){
+    charmExtend(rootNode, minSupport, propertyStats);
     return closedItemsets;
 }
 
-void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport){
+void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport, std::array<unsigned int, 4> * propertyStats){
     for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd();) {
         auto rightHandChildren = childIterator;
         for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd();){
@@ -18,12 +18,12 @@ void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport){
             DCharmNode::diff_set * diffSet = DCharmNode::getDiffSet(rNeighbourIterator->second, childIterator->second);
             if (childIterator->second->getSupport() - diffSet->size() > minSupport) {
                 DCharmNode::item_set * itemSetUnion = DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
-                charmProperty(rootNode, itemSetUnion, diffSet, &childIterator, &rNeighbourIterator);
+                charmProperty(rootNode, itemSetUnion, diffSet, &childIterator, &rNeighbourIterator, propertyStats);
             }
             rNeighbourIterator = savedIterator;
         }
         if(childIterator->second->hasChildren())
-            charmExtend(&(childIterator->second), minSupport);
+            charmExtend(&(childIterator->second), minSupport, propertyStats);
 
         auto toCheck = childIterator++;
         if(!isSubsumed(toCheck->second))
@@ -34,26 +34,31 @@ void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport){
     }
 }
 
-void DCharm::charmProperty(DCharmNode ** rootNode, DCharmNode::item_set * X, DCharmNode::diff_set * Y, DCharmNode::childIterator * nodeIiterator, DCharmNode::childIterator * nodeJiterator){
+void DCharm::charmProperty(DCharmNode ** rootNode, DCharmNode::item_set * X, DCharmNode::diff_set * Y, DCharmNode::childIterator * nodeIiterator, DCharmNode::childIterator * nodeJiterator, std::array<unsigned int, 4> * propertyStats){
     DCharmNode * nodeI = (*nodeIiterator)->second;
     DCharmNode * nodeJ = (*nodeJiterator)->second;
     if (nodeI->equalsDiffSet(nodeJ)){
         (*rootNode)->removeChild(*nodeJiterator);
         nodeI->updateItemSet(X);
+        (*propertyStats)[0] += 1;
         delete X;
         delete Y;
     }
     else if (nodeI->containsDiffSet(nodeJ)) {
         nodeI->updateItemSet(X);
+        (*propertyStats)[1] += 1;
         delete X;
         delete Y;
     }
     else if (nodeJ->containsDiffSet(nodeI)){
         (*rootNode)->removeChild(*nodeJiterator);
         (*nodeIiterator)->second->insertChild(new DCharmNode(nodeI, X, Y, -1, nodeI->getSortMode()));
+        (*propertyStats)[2] += 1;
     }
-    else
+    else {
         (*nodeIiterator)->second->insertChild(new DCharmNode(nodeI, X, Y, -1, nodeI->getSortMode()));
+        (*propertyStats)[3] += 1;
+    }
 }
 
 void DCharm::insertClosedSet(DCharmNode * node){

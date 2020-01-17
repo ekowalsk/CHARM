@@ -18,6 +18,9 @@ typedef struct Stats {
     long long frequentMiningTime;
     long long algorithmTime;
     std::array<unsigned int, 4> propertyCalls;
+    Stats(){
+        propertyCalls = std::array<unsigned int, 4> {0, 0, 0, 0};
+    }
 } Stats;
 
 std::istream& getLine(std::istream& is, std::string& t);

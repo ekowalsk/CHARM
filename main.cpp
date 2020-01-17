@@ -6,10 +6,10 @@
 
 int main(int argc, char* argv[]) {
     Parameter params {
-        .path = "data\\processed\\example",
+        .path = "/home/ewa/Dokumenty/EDAMI/projekt/data/processed/example",
         .minSup = 2,
         .startSort = 1,
-        .dCharm = false,
+        .dCharm = true,
         .stats = false
     };
     Stats stats;
@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
         auto root = new CharmNode(nullptr, nullptr, nullptr, params.startSort);
         for (auto& itemTid : freqSets)
             root->insertChild(new CharmNode(root, new CharmNode::item_set(itemTid.first), new CharmNode::tid_list(itemTid.second), params.startSort));
-        charm.charm(&root, params.minSup);
+        charm.charm(&root, params.minSup, &(stats.propertyCalls));
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
         auto root = new DCharmNode(nullptr, nullptr, nullptr, transactions.size(), params.startSort);
         for (auto& itemTid : freqSets)
             root->insertChild(new DCharmNode(root, new DCharmNode::item_set(itemTid.first), new DCharmNode::diff_set(itemTid.second), -1, params.startSort));
-        dCharm.dcharm(&root, params.minSup);
+        dCharm.dcharm(&root, params.minSup, &(stats.propertyCalls));
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
