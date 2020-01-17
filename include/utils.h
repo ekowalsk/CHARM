@@ -10,10 +10,15 @@ typedef struct Parameter {
     std::string path;
     int minSup;
     int startSort;
-    bool example;
     bool dCharm;
-    bool measure;
+    bool stats;
 } Parameter;
+
+typedef struct Stats {
+    long long frequentMiningTime;
+    long long algorithmTime;
+    std::array<unsigned int, 4> propertyCalls;
+} Stats;
 
 std::istream& getLine(std::istream& is, std::string& t);
 
@@ -21,7 +26,9 @@ std::vector<std::list<int>> readTransactions(const std::string& filepath);
 
 std::vector<std::string> readNames(const std::string& filepath);
 
-std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& findTwoSets);
+std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets);
+
+void displayStats(Stats& stats);
 
 bool parseArgs(const std::vector<std::string>& args, Parameter& params);
 

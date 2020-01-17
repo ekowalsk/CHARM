@@ -1,9 +1,11 @@
-#include "utils.h"
-#include <sstream>
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+#include <sstream>
 
-std::istream& getLine(std::istream& is, std::string& t)
-{
+#include "utils.h"
+
+std::istream& getLine(std::istream& is, std::string& t) {
     t.clear();
 
     std::istream::sentry se(is, true);
@@ -28,13 +30,11 @@ std::istream& getLine(std::istream& is, std::string& t)
     }
 }
 
-std::vector<std::list<int>> readTransactions(const std::string& filepath)
-{
+std::vector<std::list<int>> readTransactions(const std::string& filepath) {
     std::ifstream file(filepath);
     std::string line;
     std::vector<std::list<int>> transactions;
-    while (!getLine(file, line).eof())
-    {
+    while (!getLine(file, line).eof()) {
         std::list<int> transaction;
         std::istringstream stream(line);
         std::string number;
@@ -46,8 +46,7 @@ std::vector<std::list<int>> readTransactions(const std::string& filepath)
     return transactions;
 }
 
-std::vector<std::string> readNames(const std::string& filepath)
-{
+std::vector<std::string> readNames(const std::string& filepath) {
     std::ifstream file(filepath);
     std::string line;
     std::vector<std::string> names;
@@ -57,14 +56,11 @@ std::vector<std::string> readNames(const std::string& filepath)
     return names;
 }
 
-std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& findTwoSets)
-{
+std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets) {
     std::map<std::list<int>, std::list<int>> result;
     int transactionNumber = 0;
-    for (auto& transaction : transactions)
-    {
-        for (auto& item : transaction)
-        {
+    for (auto& transaction : transactions) {
+        for (auto& item : transaction) {
             std::list<int> itemset { item };
             if (result.find(itemset) == result.end())
                 result[itemset] = std::list<int> { transactionNumber };
@@ -75,33 +71,37 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
     }
     std::vector<std::list<int>> toDelete;
     std::map<int, std::list<int>> reducedTransactions;
-    for (auto& it : result)
-    {
+    for (auto& it : result) {
         if (it.second.size() <= minSup)
             toDelete.push_back(it.first);
-        else if (findTwoSets)
-        {
-            for (auto& tid : it.second)
-            {
-                if (reducedTransactions.find(tid) == reducedTransactions.end())
-                    reducedTransactions[tid] = it.first;
-                else
-                    reducedTransactions[tid].push_back(it.first.front());
+        else {
+            if (findTwoSets) {
+                for (auto &tid : it.second) {
+                    if (reducedTransactions.find(tid) == reducedTransactions.end())
+                        reducedTransactions[tid] = it.first;
+                    else
+                        reducedTransactions[tid].push_back(it.first.front());
+                }
+            }
+            if (getDiffsets) {
+                std::list<int> transactionList(transactions.size());
+                std::list<int> diffSet;
+                std::iota(transactionList.begin(), transactionList.end(), 0);
+                std::set_difference(transactionList.begin(), transactionList.end(), it.second.begin(), it.second.end(),
+                                    std::inserter(diffSet, diffSet.begin()));
+                it.second = diffSet;
             }
         }
     }
     for (auto& it : toDelete)
         result.erase(it);
-    if (findTwoSets)
-    {
+    if (findTwoSets) {
         std::map<std::list<int>, std::list<int>> reducedResult;
         transactionNumber = 0;
-        for (auto& transaction : reducedTransactions)
-        {
+        for (auto& transaction : reducedTransactions) {
             std::list<int> items = transaction.second;
             for (auto itemOne = items.begin(); itemOne != items.end(); ++itemOne)
-                for (auto itemTwo = std::next(itemOne, 1); itemTwo != items.end(); ++itemTwo)
-                {
+                for (auto itemTwo = std::next(itemOne, 1); itemTwo != items.end(); ++itemTwo) {
                     std::list<int> itemset { *itemOne, *itemTwo };
                     if (reducedResult.find(itemset) == reducedResult.end())
                         reducedResult[itemset] = std::list<int> { transactionNumber };
@@ -112,50 +112,54 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
         }
         for (auto& it : reducedResult)
         {
-            if (it.second.size() > minSup)
-                result[it.first] = it.second;
+            if (it.second.size() > minSup) {
+                if (getDiffsets) {
+                    std::list<int> tidX = result[std::list<int>{it.first.front()}];
+                    std::list<int> tidY = result[std::list<int>{it.first.back()}];
+                    std::list<int> diffSet;
+                    std::set_difference(tidY.begin(), tidY.end(), tidX.begin(), tidX.end(),
+                                        std::inserter(diffSet, diffSet.begin()));
+                    result[it.second] = diffSet;
+                }
+                else
+                    result[it.first] = it.second;
+            }
         }
     }
     return result;
 }
 
-bool parseArgs(const std::vector<std::string>& args, Parameter& params)
-{
-    for (std::vector<std::string>::size_type i = 0; i < args.size(); ++i)
-    {
-        if (args[i] == "-h" || args[i] == "-help")
-        {
+void displayStats(Stats& stats) {
+    std::cout << "Frequent itemsets mining time (ms): " << stats.frequentMiningTime << std::endl;
+    std::cout << "Algorithm time (ms): " << stats.algorithmTime << std::endl;
+}
+
+bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
+    for (std::vector<std::string>::size_type i = 0; i < args.size(); ++i) {
+        if (args[i] == "-h" || args[i] == "-help") {
             displayHelp(false);
             return false;
         }
         else if (args[i] == "-d" || args[i] == "-dcharm")
             params.dCharm = true;
-        else if (args[i] == "-e" || args[i] == "-example")
-            params.example = true;
-        else if (args[i] == "-m" || args[i] == "-measure")
-            params.measure = true;
-        else if (args[i] == "-ms" || args[i] == "-minSup")
-        {
-            if (++i == args.size())
-            {
+        else if (args[i] == "-ds" || args[i] == "-displayStats")
+            params.stats = true;
+        else if (args[i] == "-ms" || args[i] == "-minSup") {
+            if (++i == args.size()) {
                 displayHelp(true);
                 return false;
             }
             params.minSup = stoi(args[i]);
         }
-        else if (args[i] == "-p" || args[i] == "-path")
-        {
-            if (++i == args.size())
-            {
+        else if (args[i] == "-p" || args[i] == "-path") {
+            if (++i == args.size()) {
                 displayHelp(true);
                 return false;
             }
             params.path = args[i];
         }
-        else if (args[i] == "-s" || args[i] == "-sort")
-        {
-            if (++i == args.size())
-            {
+        else if (args[i] == "-s" || args[i] == "-sort") {
+            if (++i == args.size()) {
                 displayHelp(true);
                 return false;
             }
@@ -165,14 +169,12 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params)
                 params.startSort = -1;
             else if (args[i] == "lex")
                 params.startSort = 0;
-            else
-            {
+            else {
                 displayHelp(true);
                 return false;
             }
         }
-        else
-        {
+        else {
             displayHelp(true);
             return false;
         }
@@ -180,17 +182,16 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params)
     return true;
 }
 
-void displayHelp(const bool& wrongArg)
-{
+void displayHelp(const bool& wrongArg) {
     if (wrongArg)
-        std::cerr << "Unrecognized argument provided!" << std::endl;
+        std::cout << "Unrecognized argument provided!" << std::endl;
     std::cout << "Available command line arguments:" << std::endl;
     std::cout << "-h,-help - print help" << std::endl;
     std::cout << "-d,-dcharm - use dCharm instead of Charm. Defaults to false." << std::endl;
+    std::cout << "-ds,-displayStats - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
     std::cout << "-e,-example - run example small dataset on Charm (run with -d to use dCharm). Defaults to false." << std::endl;
-    std::cout << "-m,-measure - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
-    std::cout << "-ms,-minSup <support> - minimum support value for frequent itemsets. Defaults to 10." << std::endl;
-    std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions."<< std::endl;
-    std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/mushroom." << std::endl;
-    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to lex." << std::endl;
+    std::cout << "-ms,-minSup <support> - minimum support value for frequent itemsets. Defaults to 2." << std::endl;
+    std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions. Available names: example, mushroom, nursery, car."<< std::endl;
+    std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/example (example small dataset)." << std::endl;
+    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to asc." << std::endl;
 }

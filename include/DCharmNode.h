@@ -3,19 +3,21 @@
 
 #include <list>
 #include <map>
+#include <functional>
 
 class DCharmNode {
 public:
     typedef std::list<int> diff_set;
     typedef std::list<int> item_set;
-    typedef std::multimap<int, DCharmNode *>::iterator childIterator;
-    //TODO map <item_set *, DCharmNode*>
+    typedef std::multimap<std::list<int>, DCharmNode *, std::function<bool(const std::list<int>&, const std::list<int>&)>>::iterator childIterator;
+
 private:
     item_set * itemSet;
     diff_set * diffSet;
+    int sortMode;
 
     DCharmNode * parent;
-    std::multimap<int, DCharmNode *> * children; // map of pairs <support, Node>
+    std::multimap<std::list<int>, DCharmNode *, std::function<bool(const std::list<int>&, const std::list<int>&)>> * children; // map of pairs <support, Node>
 
     int hashValue;
     int support;
@@ -31,7 +33,7 @@ private:
     static diff_set * differenceDiffSet(diff_set * diffSet1, diff_set * diffSet2);
 
 public:
-    DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support=-1);
+    DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support=-1, int sortMode = 1);
     ~DCharmNode();
 
     static item_set * unionItemSet(const DCharmNode * node1, const DCharmNode * node2);
@@ -41,6 +43,7 @@ public:
     childIterator getChildrenEnd();
 
     item_set * getItemSet();
+    int getSortMode();
 
     void setItemSet(item_set * itemSet);
 

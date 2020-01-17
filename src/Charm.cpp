@@ -10,32 +10,27 @@ Charm::closedItemsetsmap Charm::charm(CharmNode ** rootNode, int minSupport){
 }
 
 void Charm::charmExtend(CharmNode ** rootNode, int minSupport){
-    // itbegin = ebegin lub begin
-    // posortować dla leksykograficznego
-    for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd(); childIterator++) {
+    for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd();) {
         auto rightHandChildren = childIterator;
-        CharmNode::item_set * itemSetUnion = childIterator->second->getItemSet();
-        CharmNode::tid_list * tidListIntersection = childIterator->second->getTidList();
         for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd();){
             auto savedIterator= rNeighbourIterator;
             ++savedIterator;
-            tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
+            CharmNode::tid_list* tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
             if (tidListIntersection->size() > minSupport) {
-                itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
+                CharmNode::item_set* itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
                 charmProperty(rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator);
             }
             rNeighbourIterator = savedIterator;
         }
-        if(childIterator->second->hasChildren()) {
+        if(childIterator->second->hasChildren())
             charmExtend(&(childIterator->second), minSupport);
-            childIterator->second->removeChildren();
-        }
 
-        if(!isSubsumed(itemSetUnion, tidListIntersection))
-            insertClosedSet(itemSetUnion, tidListIntersection);
+        auto toCheck = childIterator++;
+        if(!isSubsumed(toCheck->second->getItemSet(), toCheck->second->getTidList()))
+            insertClosedSet(toCheck->second->getItemSet(), toCheck->second->getTidList());
         else
-            delete itemSetUnion;
-        delete tidListIntersection;
+            delete toCheck->second;
+        (*rootNode)->removeChild(toCheck);
     }
 }
 void Charm::charmProperty(CharmNode ** rootNode, CharmNode::item_set * X, CharmNode::tid_list * Y, CharmNode::childIterator * nodeIiterator, CharmNode::childIterator * nodeJiterator){
@@ -44,16 +39,20 @@ void Charm::charmProperty(CharmNode ** rootNode, CharmNode::item_set * X, CharmN
     if (nodeI->equalsTidList(nodeJ)){
         (*rootNode)->removeChild(*nodeJiterator);
         (*nodeIiterator)->second->updateItemSet(X);
+        delete X;
+        delete Y;
     }
-    else if (nodeJ->containsTidList(nodeI))
+    else if (nodeJ->containsTidList(nodeI)) {
         (*nodeIiterator)->second->updateItemSet(X);
+        delete X;
+        delete Y;
+    }
     else if (nodeI->containsTidList(nodeJ)){
         (*rootNode)->removeChild(*nodeJiterator);
-        //TODO - dodać dla opcji leksykograficznej - <itemset, Child>
-        (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y));
+        (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y, (*nodeIiterator)->second->getSortMode()));
     }
     else
-        (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y));
+        (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y, (*nodeIiterator)->second->getSortMode()));
 }
 
 void Charm::insertClosedSet(CharmNode::item_set * itemSet, CharmNode::tid_list * tidList){
