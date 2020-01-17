@@ -11,7 +11,7 @@ typedef struct Parameter {
     int minSup;
     int startSort;
     bool dCharm;
-    bool measure;
+    bool stats;
 } Parameter;
 
 typedef struct Stats {

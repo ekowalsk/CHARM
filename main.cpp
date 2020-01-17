@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
         .minSup = 2,
         .startSort = 1,
         .dCharm = false,
-        .measure = false
+        .stats = false
     };
     Stats stats;
     if (!parseArgs(std::vector<std::string>(argv + 1, argv + argc), params))
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
                 (std::chrono::steady_clock::now() - algorithmStart).count();
         dCharm.printClosedItemsets();
     }
-    if (params.measure)
+    if (params.stats)
         displayStats(stats);
     return 0;
 }
