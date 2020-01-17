@@ -1,7 +1,7 @@
 #include <iostream>
 #include "DCharmNode.h"
 
-DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support) {
+DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support, int sortMode) {
     if (itemSet != nullptr) {
         this->itemSet = copyItemSet(itemSet);
         this->itemSet->sort();
@@ -26,6 +26,14 @@ DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffS
         this->support = 0;
 
     hashValue = calculateHash();
+    this->sortMode = sortMode;
+    std::function<bool(const std::list<int>&, const std::list<int>&)> sortFun =
+            [sortMode](const std::list<int>& one, const std::list<int>& two) {
+                if (sortMode >= 0)
+                    return one.front() < two.front();
+                else if (sortMode < 0)
+                    return one.front() > two.front();
+            };
     children = new std::multimap<int, DCharmNode *>();
 }
 

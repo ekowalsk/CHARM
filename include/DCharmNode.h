@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <functional>
 
 class DCharmNode {
 public:
@@ -13,6 +14,7 @@ public:
 private:
     item_set * itemSet;
     diff_set * diffSet;
+    int sortMode;
 
     DCharmNode * parent;
     std::multimap<int, DCharmNode *> * children; // map of pairs <support, Node>
@@ -24,14 +26,13 @@ private:
     int getHashOfDiffset();
     int calculateHash();
 
-    static item_set * copyItemSet(const item_set * source);
     static item_set * unionItemSet(item_set * itemSet1, item_set * itemSet2);
 
     static diff_set * copyDiffSet(diff_set * diffSet);
     static diff_set * differenceDiffSet(diff_set * diffSet1, diff_set * diffSet2);
 
 public:
-    DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support=-1);
+    DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support=-1, int sortMode = 1);
     ~DCharmNode();
 
     static item_set * unionItemSet(const DCharmNode * node1, const DCharmNode * node2);
@@ -48,8 +49,6 @@ public:
     void removeChild(childIterator childIt);
     void removeChildren();
 
-    void sortChildrenReversed();
-
     void updateItemSet(item_set * itemSet);
 
     int getHash();
@@ -60,6 +59,7 @@ public:
     bool containsDiffSet(DCharmNode *node);
     bool hasChildren();
 
+    static item_set * copyItemSet(const item_set * source);
     void static printItemSet(item_set * itemSet);
 };
 #endif //PROJEKT_DCHARMNODE_H

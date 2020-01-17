@@ -2,7 +2,7 @@
 
 #include "CharmNode.h"
 
-CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList) {
+CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode) {
     if (itemSet != nullptr)
         this->itemSet = copyItemSet(itemSet);
     else
@@ -15,20 +15,10 @@ CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList)
     this->sortMode = sortMode;
     std::function<bool(const std::list<int>&, const std::list<int>&)> sortFun =
             [sortMode](const std::list<int>& one, const std::list<int>& two) {
-        if (sortMode > 0)
+        if (sortMode >= 0)
             return one.front() < two.front();
         else if (sortMode < 0)
             return one.front() > two.front();
-        else {
-            for (auto it1 = one.begin(), it2 = two.begin(); ;++it1, ++it2) {
-                if (it1 == one.end())
-                    return true;
-                else if (it2 == two.end())
-                    return false;
-                else if (*it1 != *it2)
-                    return *it1 < *it2;
-            }
-        }
     };
     children = new std::multimap<std::list<int>, CharmNode*, decltype(sortFun)>(sortFun);
 }

@@ -19,14 +19,13 @@ private:
     CharmNode * parent;
     std::multimap<std::list<int>, CharmNode *, std::function<bool(const std::list<int>&, const std::list<int>&)>> * children; // map of pairs <support, Node>
 
-    static item_set * copyItemSet(const item_set * source);
     static item_set * unionItemSet(item_set * itemSet1, item_set * itemSet2);
 
     static tid_list * copyTidList(tid_list * tidList);
     static tid_list * intersectTidList(tid_list * tidList1, tid_list * tidList2);
 
 public:
-    CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList);
+    CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode);
     ~CharmNode();
 
     static item_set * unionItemSet(const CharmNode * node1, const CharmNode * node2);
@@ -55,6 +54,7 @@ public:
     bool containsTidList(CharmNode *node);
     bool hasChildren();
 
-    void static printItemSet(item_set * itemSet);
+    static void printItemSet(item_set * itemSet);
+    static item_set * copyItemSet(const item_set * source);
 };
 #endif //PROJEKT_CHARMNODE_H

@@ -55,10 +55,10 @@ void DCharm::charmProperty(DCharmNode ** rootNode, DCharmNode::item_set * X, DCh
 
 void DCharm::insertClosedSet(DCharmNode * node){
     try {
-        closedItemsets.at(node->getHash()).push_back({node->getItemSet(), node->getSupport()});
+        closedItemsets.at(node->getHash()).emplace_back(DCharmNode::copyItemSet(node->getItemSet()), node->getSupport());
     } catch (std::out_of_range& e){
         closedItemsets.insert(std::make_pair(node->getHash(), std::list<std::pair<DCharmNode::item_set *, int>>()));
-        closedItemsets.at(node->getHash()).push_back({node->getItemSet(), node->getSupport()});
+        closedItemsets.at(node->getHash()).emplace_back(DCharmNode::copyItemSet(node->getItemSet()), node->getSupport());
     }
 }
 
@@ -66,9 +66,8 @@ bool DCharm::isSubsumed(DCharmNode * node){
     try {
         for (auto & iterator : closedItemsets.at(node->getHash())){
             if (iterator.second == node->getSupport()){
-                if(DCharmNode::isItemSetContained(iterator.first, node->getItemSet())){
+                if(DCharmNode::isItemSetContained(iterator.first, node->getItemSet()))
                     return true;
-                }
             }
         }
         return false;

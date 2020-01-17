@@ -44,7 +44,6 @@ void Charm::charmProperty(CharmNode ** rootNode, CharmNode::item_set * X, CharmN
         (*nodeIiterator)->second->updateItemSet(X);
     else if (nodeI->containsTidList(nodeJ)){
         (*rootNode)->removeChild(*nodeJiterator);
-        //TODO - dodać dla opcji leksykograficznej - <itemset, Child>
         (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y, (*nodeIiterator)->second->getSortMode()));
     }
     else
@@ -54,10 +53,10 @@ void Charm::charmProperty(CharmNode ** rootNode, CharmNode::item_set * X, CharmN
 void Charm::insertClosedSet(CharmNode::item_set * itemSet, CharmNode::tid_list * tidList){
     int hash = CharmNode::getHash(tidList);
     try {
-        closedItemsets.at(hash).push_back({itemSet, tidList->size()});
+        closedItemsets.at(hash).emplace_back(CharmNode::copyItemSet(itemSet), tidList->size());
     } catch (std::out_of_range& e){
         closedItemsets.insert(std::make_pair(hash, std::list<std::pair<CharmNode::item_set *, int>>()));
-        closedItemsets.at(hash).push_back({itemSet, tidList->size()});
+        closedItemsets.at(hash).emplace_back(CharmNode::copyItemSet(itemSet), tidList->size());
     }
 }
 
@@ -66,9 +65,8 @@ bool Charm::isSubsumed(CharmNode::item_set * itemSet, CharmNode::tid_list * tidL
     try {
         for (auto & iterator : closedItemsets.at(hash)){
             if (iterator.second == tidList->size()){
-                if(CharmNode::isItemSetContained(iterator.first, itemSet)){
+                if(CharmNode::isItemSetContained(iterator.first, itemSet))
                     return true;
-                }
             }
         }
         return false;
