@@ -1,17 +1,14 @@
+#include <algorithm>
 #include <iostream>
+#include <numeric>
 
 #include "CharmNode.h"
 
 CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList, int sortMode) {
-    if (itemSet != nullptr)
-        this->itemSet = copyItemSet(itemSet);
-    else
-        this->itemSet = nullptr;
-    if (tidList != nullptr)
-        this->tidList = copyTidList(tidList);
-    else
-        this->tidList = nullptr;
+    this->itemSet = itemSet;
+    this->tidList = tidList;
     this->parent = parent;
+
     this->sortMode = sortMode;
     std::function<bool(const std::list<int>&, const std::list<int>&)> sortFun =
             [sortMode](const std::list<int>& one, const std::list<int>& two) {
@@ -35,27 +32,14 @@ CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList,
 
 CharmNode::item_set * CharmNode::copyItemSet(const item_set * source){
     auto itemSetCopy = new item_set();
-    for (auto &item : *source)
-        itemSetCopy->push_back(item);
+    std::copy(source->begin(), source->end(), std::inserter(*itemSetCopy, itemSetCopy->begin()));
     return itemSetCopy;
 }
 
 CharmNode::item_set * CharmNode::unionItemSet(item_set * itemSet1, item_set * itemSet2){
-    auto * itemSetUnion = copyItemSet(itemSet1);
-    auto itemIterator = itemSetUnion->begin();
-    item_set::iterator savedIterator;
-    for (auto &item : *itemSet2){
-        while (itemIterator != itemSetUnion->end() && *itemIterator < item){
-            savedIterator = itemIterator;
-            itemIterator++;
-        }
-        if (itemIterator == itemSetUnion->end()){
-            if (*savedIterator != item)
-                itemSetUnion->insert(itemIterator, item);
-        }
-        else if (*itemIterator != item)
-            itemSetUnion->insert(itemIterator, item);
-    }
+    auto * itemSetUnion = new item_set();
+    std::set_union(itemSet1->begin(), itemSet1->end(), itemSet2->begin(), itemSet2->end(),
+                   std::inserter(*itemSetUnion, itemSetUnion->begin()));
     return itemSetUnion;
 }
 
@@ -65,23 +49,15 @@ CharmNode::item_set * CharmNode::unionItemSet(const CharmNode * node1, const Cha
 
 CharmNode::tid_list * CharmNode::copyTidList(tid_list * tidList){
     auto tidListCopy = new tid_list();
-    for (auto &tid : *tidList)
-        tidListCopy->push_back(tid);
+    std::copy(tidList->begin(), tidList->end(), std::inserter(*tidListCopy, tidListCopy->begin()));
     return tidListCopy;
 }
 
 CharmNode::tid_list * CharmNode::intersectTidList(tid_list * tidList1, tid_list * tidList2){
-    auto intersectionList = new tid_list();
-    auto tidIterator1 = tidList1->begin();
-    for (auto &sourceTid : *tidList2){
-        while (tidIterator1 != tidList1->end() && *tidIterator1 < sourceTid)
-            tidIterator1++;
-        if (tidIterator1 == tidList1->end())
-            break;
-        if (*tidIterator1 == sourceTid)
-            intersectionList->push_back(sourceTid);
-    }
-    return intersectionList;
+    auto * intersectedTidList = new tid_list();
+    std::set_intersection(tidList1->begin(), tidList1->end(), tidList2->begin(), tidList2->end(),
+                                 std::inserter(*intersectedTidList, intersectedTidList->begin()));
+    return intersectedTidList;
 }
 
 CharmNode::tid_list * CharmNode::intersectedTidList(const CharmNode * node1, const CharmNode * node2){
@@ -109,8 +85,7 @@ int CharmNode::getSortMode() {
 
 void CharmNode::setItemSet(item_set * itSet){
     delete this->itemSet;
-    this->itemSet = copyItemSet(itSet);
-    this->itemSet->sort();
+    this->itemSet = itSet;
 }
 
 void CharmNode::insertChild(CharmNode * child){
@@ -135,10 +110,7 @@ void CharmNode::updateItemSet(item_set * updateItemSet){
 }
 
 int CharmNode::getHash(tid_list * tidList){
-    int tidSum = 0;
-    for (auto &tid : *tidList)
-        tidSum += tid;
-    return tidSum;
+    return std::accumulate(tidList->begin(), tidList->end(), 0);
 }
 
 int CharmNode::getSupport(){
@@ -146,32 +118,15 @@ int CharmNode::getSupport(){
 }
 
 bool CharmNode::isItemSetContained(item_set * contains, item_set * contained){
-    for (auto containsIt = contains->begin(), containedIt = contained->begin(); containedIt != contained->end(); containedIt++){
-        while (containsIt != contains->end() && *containsIt < *containedIt)
-            containsIt++;
-        if (containsIt == contains->end() || *containsIt != *containedIt)
-            return false;
-    }
-    return true;
+    return std::includes(contains->begin(), contains->end(), contained->begin(), contained->end());
 }
 
 bool CharmNode::equalsTidList(CharmNode *node){
-    if (tidList->size() != node->tidList->size())
-        return false;
-    for (auto tidIt1 = tidList->begin(), tidIt2 = node->tidList->begin(); tidIt1 != tidList->end(); tidIt1++, tidIt2++)
-        if (*tidIt1 != *tidIt2)
-            return false;
-    return true;
+    return std::equal(tidList->begin(), tidList->end(), node->tidList->begin(), node->tidList->end());
 }
 
 bool CharmNode::containsTidList(CharmNode *node){
-    for (auto tidIt1 = node->tidList->begin(), tidIt2 = tidList->begin(); tidIt1 != node->tidList->end(); tidIt1++){
-        while (tidIt2 != tidList->end() && *tidIt2 < *tidIt1)
-            tidIt2++;
-        if (tidIt2 == tidList->end() || *tidIt1 != *tidIt2)
-            return false;
-    }
-    return true;
+    return std::includes(tidList->begin(), tidList->end(), node->tidList->begin(), node->tidList->end());
 }
 
 bool CharmNode::hasChildren(){
@@ -187,7 +142,6 @@ void CharmNode::printItemSet(item_set * itemSet){
 CharmNode::~CharmNode() {
     delete itemSet;
     delete tidList;
-    delete parent;
     for (auto &child : *children)
         delete child.second;
     delete children;

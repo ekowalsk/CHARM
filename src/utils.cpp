@@ -1,6 +1,9 @@
-#include "utils.h"
-#include <sstream>
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+#include <sstream>
+
+#include "utils.h"
 
 std::istream& getLine(std::istream& is, std::string& t) {
     t.clear();
@@ -53,7 +56,7 @@ std::vector<std::string> readNames(const std::string& filepath) {
     return names;
 }
 
-std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& findTwoSets) {
+std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets) {
     std::map<std::list<int>, std::list<int>> result;
     int transactionNumber = 0;
     for (auto& transaction : transactions) {
@@ -71,12 +74,22 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
     for (auto& it : result) {
         if (it.second.size() <= minSup)
             toDelete.push_back(it.first);
-        else if (findTwoSets) {
-            for (auto& tid : it.second) {
-                if (reducedTransactions.find(tid) == reducedTransactions.end())
-                    reducedTransactions[tid] = it.first;
-                else
-                    reducedTransactions[tid].push_back(it.first.front());
+        else {
+            if (findTwoSets) {
+                for (auto &tid : it.second) {
+                    if (reducedTransactions.find(tid) == reducedTransactions.end())
+                        reducedTransactions[tid] = it.first;
+                    else
+                        reducedTransactions[tid].push_back(it.first.front());
+                }
+            }
+            if (getDiffsets) {
+                std::list<int> transactionList(transactions.size());
+                std::list<int> diffSet;
+                std::iota(transactionList.begin(), transactionList.end(), 0);
+                std::set_difference(transactionList.begin(), transactionList.end(), it.second.begin(), it.second.end(),
+                                    std::inserter(diffSet, diffSet.begin()));
+                it.second = diffSet;
             }
         }
     }
@@ -97,9 +110,20 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
                 }
             ++transactionNumber;
         }
-        for (auto& it : reducedResult) {
-            if (it.second.size() > minSup)
-                result[it.first] = it.second;
+        for (auto& it : reducedResult)
+        {
+            if (it.second.size() > minSup) {
+                if (getDiffsets) {
+                    std::list<int> tidX = result[std::list<int>{it.first.front()}];
+                    std::list<int> tidY = result[std::list<int>{it.first.back()}];
+                    std::list<int> diffSet;
+                    std::set_difference(tidY.begin(), tidY.end(), tidX.begin(), tidX.end(),
+                                        std::inserter(diffSet, diffSet.begin()));
+                    result[it.second] = diffSet;
+                }
+                else
+                    result[it.first] = it.second;
+            }
         }
     }
     return result;
@@ -160,7 +184,7 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
 
 void displayHelp(const bool& wrongArg) {
     if (wrongArg)
-        std::cerr << "Unrecognized argument provided!" << std::endl;
+        std::cout << "Unrecognized argument provided!" << std::endl;
     std::cout << "Available command line arguments:" << std::endl;
     std::cout << "-h,-help - print help" << std::endl;
     std::cout << "-d,-dcharm - use dCharm instead of Charm. Defaults to false." << std::endl;

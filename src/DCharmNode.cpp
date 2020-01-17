@@ -1,105 +1,80 @@
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+
 #include "DCharmNode.h"
 
-DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support) {
-    if (itemSet != nullptr) {
-        this->itemSet = copyItemSet(itemSet);
-        this->itemSet->sort();
-    }
-    else
-        this->itemSet = nullptr;
-
-    if (diffSet != nullptr) {
-        this->diffSet = copyDiffSet(diffSet);
-        this->diffSet->sort();
-    }
-    else
-        this->diffSet = nullptr;
-
+DCharmNode::DCharmNode(DCharmNode * parent, item_set * itemSet, diff_set * diffSet, int support, int sortMode) {
+    this->itemSet = itemSet;
+    this->diffSet = diffSet;
     this->parent = parent;
-
-    if (support == -1 && parent != nullptr)
-        this->support = calculateSupport(parent);
-    else if (support == -2)
-        this->support = diffSet->size();
-    else if (parent == nullptr)
-        this->support = 0;
+    this->support = support == -1 && parent != nullptr ? calculateSupport(parent) : support;
 
     hashValue = calculateHash();
-    children = new std::multimap<int, DCharmNode *>();
+    this->sortMode = sortMode;
+    std::function<bool(const std::list<int>&, const std::list<int>&)> sortFun =
+            [sortMode](const std::list<int>& one, const std::list<int>& two) {
+                if (sortMode > 0)
+                    return one.front() < two.front();
+                else if (sortMode < 0)
+                    return one.front() > two.front();
+                else {
+                    for (auto it1 = one.begin(), it2 = two.begin(); ;++it1, ++it2) {
+                        if (it1 == one.end())
+                            return true;
+                        else if (it2 == two.end())
+                            return false;
+                        else if (*it1 != *it2)
+                            return *it1 < *it2;
+                    }
+                }
+            };
+    children = new std::multimap<std::list<int>, DCharmNode*, decltype(sortFun)>(sortFun);
 }
 
 int DCharmNode::calculateSupport(DCharmNode * parentNode){
-    return parentNode->support - diffSet->size();
+    return parentNode->support - static_cast<int>(diffSet->size());
 }
 
 int DCharmNode::calculateHash(){
-    if (parent == nullptr)
-        return 0;
-    int returnValue = parent->getHashOfDiffset();
-    for (auto &tid : *diffSet)
-        returnValue -= tid;
+    if (parent == nullptr) {
+        std::list<int> sum(support);
+        std::iota(sum.begin(), sum.end(), 0);
+        return std::accumulate(sum.begin(), sum.end(), 0);
+    }
+    int returnValue = parent->getHash() - getHashOfDiffset();
     return returnValue;
 }
 
 int DCharmNode::getHashOfDiffset(){
     if (diffSet == nullptr)
         return 0;
-    int hash = 0;
-    for (auto &tid : *diffSet)
-        hash += tid;
-    return hash;
+    return std::accumulate(diffSet->begin(), diffSet->end(), 0);
 }
 
 DCharmNode::item_set * DCharmNode::copyItemSet(const item_set * source){
     auto itemSetCopy = new item_set();
-    for (auto &item : *source)
-        itemSetCopy->push_back(item);
+    std::copy(source->begin(), source->end(), std::inserter(*itemSetCopy, itemSetCopy->begin()));
     return itemSetCopy;
 }
 
 DCharmNode::item_set * DCharmNode::unionItemSet(item_set * itemSet1, item_set * itemSet2){
-    auto * itemSetUnion = copyItemSet(itemSet1);
-    auto itemIterator = itemSetUnion->begin();
-    item_set::iterator savedIterator;
-    for (auto &item : *itemSet2){
-        while (itemIterator != itemSetUnion->end() && *itemIterator < item){
-            savedIterator = itemIterator;
-            itemIterator++;
-        }
-        if (itemIterator == itemSetUnion->end()){
-            if (*savedIterator != item)
-                itemSetUnion->insert(itemIterator, item);
-        }
-        else if (*itemIterator != item)
-            itemSetUnion->insert(itemIterator, item);
-    }
+    auto * itemSetUnion = new item_set();
+    std::set_union(itemSet1->begin(), itemSet1->end(), itemSet2->begin(), itemSet2->end(),
+            std::inserter(*itemSetUnion, itemSetUnion->begin()));
     return itemSetUnion;
 }
 
 DCharmNode::diff_set * DCharmNode::copyDiffSet(diff_set * diffSet){
     auto diffSetCopy = new diff_set();
-    for (auto &tid : *diffSet)
-        diffSetCopy->push_back(tid);
+    std::copy(diffSet->begin(), diffSet->end(), std::inserter(*diffSetCopy, diffSetCopy->begin()));
     return diffSetCopy;
 }
 
 DCharmNode::diff_set * DCharmNode::differenceDiffSet(diff_set * diffSet1, diff_set * diffSet2){
     auto returnedDiffSet = new diff_set();
-    auto diffSetIterator1 = diffSet1->begin();
-    diff_set::iterator savedIterator;
-    for (auto &tid : *diffSet2){
-        while (diffSetIterator1 != diffSet1->end() && *diffSetIterator1 < tid) {
-            savedIterator = diffSetIterator1;
-            diffSetIterator1++;
-        }
-        if (diffSetIterator1 == diffSet1->end()) {
-            if (*savedIterator != tid)
-                returnedDiffSet->push_back(tid);
-        }
-        else if (*diffSetIterator1 != tid)
-            returnedDiffSet->push_back(tid);
-    }
+    std::set_difference(diffSet1->begin(), diffSet1->end(), diffSet2->begin(), diffSet2->end(),
+            std::inserter(*returnedDiffSet, returnedDiffSet->begin()));
     return returnedDiffSet;
 }
 
@@ -124,10 +99,13 @@ DCharmNode::item_set * DCharmNode::getItemSet(){
     return itemSet;
 }
 
+int DCharmNode::getSortMode() {
+    return sortMode;
+}
+
 void DCharmNode::setItemSet(item_set * itSet){
     delete this->itemSet;
-    this->itemSet = copyItemSet(itSet);
-    this->itemSet->sort();
+    this->itemSet = itSet;
 }
 
 void DCharmNode::removeChild(childIterator childIt){
@@ -138,7 +116,7 @@ void DCharmNode::removeChildren(){
     children->clear();
 }
 
-void DCharmNode::updateItemSet(item_set * updateItemSet){
+void DCharmNode::updateItemSet(item_set * updateItemSet) {
     setItemSet(unionItemSet(this->itemSet, updateItemSet));
     for (auto & child : *children)
         child.second->updateItemSet(updateItemSet);
@@ -149,8 +127,10 @@ int DCharmNode::getHash(){
 }
 
 void DCharmNode::insertChild(DCharmNode * child){
-    int childSupport = child->getSupport();
-    children->insert({childSupport, child});
+    if (sortMode != 0)
+        children->insert({{child->getSupport()}, child});
+    else
+        children->insert({*child->itemSet, child});
 }
 
 
@@ -159,33 +139,15 @@ int DCharmNode::getSupport(){
 }
 
 bool DCharmNode::isItemSetContained(item_set * contains, item_set * contained){
-    for (auto containsIt = contains->begin(), containedIt = contained->begin(); containedIt != contained->end(); containedIt++){
-        while (containsIt != contains->end() && *containsIt < *containedIt)
-            containsIt++;
-        if (containsIt == contains->end() || *containsIt != *containedIt)
-            return false;
-    }
-    return true;
+    return std::includes(contains->begin(), contains->end(), contained->begin(), contained->end());
 }
 
 bool DCharmNode::equalsDiffSet(DCharmNode *node){
-    if (diffSet->size() != node->diffSet->size())
-        return false;
-    for (auto tidIt1 = diffSet->begin(), tidIt2 = node->diffSet->begin(); tidIt1 != diffSet->end(); tidIt1++, tidIt2++){
-        if (*tidIt1 != *tidIt2)
-            return false;
-    }
-    return true;
+    return std::equal(diffSet->begin(), diffSet->end(), node->diffSet->begin(), node->diffSet->end());
 }
 
 bool DCharmNode::containsDiffSet(DCharmNode *node){
-    for (auto tidIt1 = node->diffSet->begin(), tidIt2 = diffSet->begin(); tidIt1 != node->diffSet->end(); tidIt1++){
-        while (tidIt2 != diffSet->end() && *tidIt2 < *tidIt1)
-            tidIt2++;
-        if (tidIt2 == diffSet->end() || *tidIt1 != *tidIt2)
-            return false;
-    }
-    return true;
+    return std::includes(diffSet->begin(), diffSet->end(), node->diffSet->begin(), node->diffSet->end());
 }
 
 bool DCharmNode::hasChildren(){
@@ -201,7 +163,6 @@ void DCharmNode::printItemSet(item_set * itemSet){
 DCharmNode::~DCharmNode(){
     delete itemSet;
     delete diffSet;
-    delete parent;
     for (auto &child : *children)
         delete child.second;
     delete children;

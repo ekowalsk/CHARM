@@ -10,29 +10,27 @@ DCharm::closedItemsetsmap DCharm::dcharm(DCharmNode ** rootNode, int minSupport)
 }
 
 void DCharm::charmExtend(DCharmNode ** rootNode, int minSupport){
-    for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd(); childIterator++) {
-        DCharmNode * node = childIterator->second;
+    for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd();) {
         auto rightHandChildren = childIterator;
         for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd();){
             auto savedIterator= rNeighbourIterator;
             ++savedIterator;
-            DCharmNode::item_set * itemSetUnion = DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
             DCharmNode::diff_set * diffSet = DCharmNode::getDiffSet(rNeighbourIterator->second, childIterator->second);
-            node = new DCharmNode(childIterator->second, itemSetUnion, diffSet);
-            if (node->getSupport() > minSupport)
+            if (childIterator->second->getSupport() - diffSet->size() > minSupport) {
+                DCharmNode::item_set * itemSetUnion = DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
                 charmProperty(rootNode, itemSetUnion, diffSet, &childIterator, &rNeighbourIterator);
+            }
             rNeighbourIterator = savedIterator;
         }
-        if(childIterator->second->hasChildren()) {
+        if(childIterator->second->hasChildren())
             charmExtend(&(childIterator->second), minSupport);
-            childIterator->second->removeChildren();
-        }
 
-        if(!isSubsumed(node))
-            insertClosedSet(node);
+        auto toCheck = childIterator++;
+        if(!isSubsumed(toCheck->second))
+            insertClosedSet(toCheck->second);
         else
-            if (node != childIterator->second)
-                delete node;
+            delete toCheck->second;
+        (*rootNode)->removeChild(toCheck);
     }
 }
 
@@ -41,16 +39,21 @@ void DCharm::charmProperty(DCharmNode ** rootNode, DCharmNode::item_set * X, DCh
     DCharmNode * nodeJ = (*nodeJiterator)->second;
     if (nodeI->equalsDiffSet(nodeJ)){
         (*rootNode)->removeChild(*nodeJiterator);
-        (*nodeIiterator)->second->updateItemSet(X);
+        nodeI->updateItemSet(X);
+        delete X;
+        delete Y;
     }
-    else if (nodeJ->containsDiffSet(nodeI))
-        (*nodeIiterator)->second->updateItemSet(X);
-    else if (nodeI->containsDiffSet(nodeJ)){
+    else if (nodeI->containsDiffSet(nodeJ)) {
+        nodeI->updateItemSet(X);
+        delete X;
+        delete Y;
+    }
+    else if (nodeJ->containsDiffSet(nodeI)){
         (*rootNode)->removeChild(*nodeJiterator);
-        (*nodeIiterator)->second->insertChild(new DCharmNode((*nodeIiterator)->second, X, Y));
+        (*nodeIiterator)->second->insertChild(new DCharmNode(nodeI, X, Y, -1, nodeI->getSortMode()));
     }
     else
-        (*nodeIiterator)->second->insertChild(new DCharmNode((*nodeIiterator)->second, X, Y));
+        (*nodeIiterator)->second->insertChild(new DCharmNode(nodeI, X, Y, -1, nodeI->getSortMode()));
 }
 
 void DCharm::insertClosedSet(DCharmNode * node){

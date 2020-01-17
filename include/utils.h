@@ -26,7 +26,7 @@ std::vector<std::list<int>> readTransactions(const std::string& filepath);
 
 std::vector<std::string> readNames(const std::string& filepath);
 
-std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& findTwoSets);
+std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets);
 
 void displayStats(Stats& stats);
 
