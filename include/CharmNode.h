@@ -3,18 +3,20 @@
 
 #include <list>
 #include <map>
+#include <functional>
 
 class CharmNode {
 public:
     typedef std::list<int> tid_list;
     typedef std::list<int> item_set;
-    typedef std::multimap<int, CharmNode *>::iterator childIterator;
+    typedef std::multimap<std::list<int>, CharmNode *, std::function<bool(const std::list<int>&, const std::list<int>&)>>::iterator childIterator;
 private:
     item_set * itemSet;
     tid_list * tidList;
+    int sortMode;
 
     CharmNode * parent;
-    std::multimap<int, CharmNode *> * children; // map of pairs <support, Node>
+    std::multimap<std::list<int>, CharmNode *, std::function<bool(const std::list<int>&, const std::list<int>&)>> * children; // map of pairs <support, Node>
 
     static item_set * copyItemSet(const item_set * source);
     static item_set * unionItemSet(item_set * itemSet1, item_set * itemSet2);
@@ -34,6 +36,7 @@ public:
 
     item_set * getItemSet();
     tid_list * getTidList();
+    int getSortMode();
 
     void setItemSet(item_set * itemSet);
 

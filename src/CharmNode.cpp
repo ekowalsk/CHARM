@@ -12,7 +12,25 @@ CharmNode::CharmNode(CharmNode * parent, item_set * itemSet, tid_list * tidList,
     else
         this->tidList = nullptr;
     this->parent = parent;
-    children = new std::multimap<int, CharmNode *>();
+    this->sortMode = sortMode;
+    std::function<bool(const std::list<int>&, const std::list<int>&)> sortFun =
+            [sortMode](const std::list<int>& one, const std::list<int>& two) {
+        if (sortMode > 0)
+            return one.front() < two.front();
+        else if (sortMode < 0)
+            return one.front() > two.front();
+        else {
+            for (auto it1 = one.begin(), it2 = two.begin(); ;++it1, ++it2) {
+                if (it1 == one.end())
+                    return true;
+                else if (it2 == two.end())
+                    return false;
+                else if (*it1 != *it2)
+                    return *it1 < *it2;
+            }
+        }
+    };
+    children = new std::multimap<std::list<int>, CharmNode*, decltype(sortFun)>(sortFun);
 }
 
 CharmNode::item_set * CharmNode::copyItemSet(const item_set * source){
@@ -85,6 +103,10 @@ CharmNode::tid_list * CharmNode::getTidList(){
     return tidList;
 }
 
+int CharmNode::getSortMode() {
+    return sortMode;
+}
+
 void CharmNode::setItemSet(item_set * itSet){
     delete this->itemSet;
     this->itemSet = copyItemSet(itSet);
@@ -92,7 +114,10 @@ void CharmNode::setItemSet(item_set * itSet){
 }
 
 void CharmNode::insertChild(CharmNode * child){
-    children->insert({child->getSupport(), child});
+    if (sortMode != 0)
+        children->insert({{child->getSupport()}, child});
+    else
+        children->insert({*child->itemSet, child});
 }
 
 void CharmNode::removeChild(childIterator childIt){
