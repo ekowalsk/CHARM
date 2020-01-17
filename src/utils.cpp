@@ -119,7 +119,7 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
                     std::list<int> diffSet;
                     std::set_difference(tidY.begin(), tidY.end(), tidX.begin(), tidX.end(),
                                         std::inserter(diffSet, diffSet.begin()));
-                    result[it.second] = diffSet;
+                    result[it.first] = diffSet;
                 }
                 else
                     result[it.first] = it.second;
