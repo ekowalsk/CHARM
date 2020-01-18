@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[]) {
     Parameter params {
-        .path = "/home/ewa/Dokumenty/EDAMI/projekt/data/processed/example",
+        .path = "data\\processed\\example",
         .minSup = 2,
         .startSort = 1,
         .dCharm = false,
