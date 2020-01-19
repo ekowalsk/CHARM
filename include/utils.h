@@ -8,17 +8,24 @@
 
 typedef struct Parameter {
     std::string path;
-    int minSup;
-    int startSort;
+    float minSup;
+    int itemsetSort;
     bool dCharm;
     bool stats;
+    bool closedItemsets;
+    bool closedItemsetsNames;
+    bool twoSetsCheck;
 } Parameter;
 
 typedef struct Stats {
     long long frequentMiningTime;
     long long algorithmTime;
-    std::array<unsigned int, 4> propertyCalls;
-    Stats(){
+    long long closedItemsetsCount;
+    std::array<unsigned int, 4> propertyCalls{};
+    Stats() {
+        frequentMiningTime = 0;
+        algorithmTime = 0;
+        closedItemsetsCount = 0;
         propertyCalls = std::array<unsigned int, 4> {0, 0, 0, 0};
     }
 } Stats;
@@ -31,7 +38,7 @@ std::vector<std::string> readNames(const std::string& filepath);
 
 std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets);
 
-void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>> * frequentOneItemsets, std::map<std::list<int>, std::list<int>> * frequentTwoItemsets);
+void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>>& frequentOneItemsets, std::map<std::list<int>, std::list<int>>& frequentTwoItemsets);
 
 void displayStats(Stats& stats);
 

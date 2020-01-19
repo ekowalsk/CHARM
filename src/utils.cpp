@@ -129,18 +129,21 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
     return result;
 }
 
-void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>> * frequentOneItemsets, std::map<std::list<int>, std::list<int>> * frequentTwoItemsets){
+void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>>& frequentOneItemsets, std::map<std::list<int>, std::list<int>>& frequentTwoItemsets){
     for (auto itemSet : frequentItemsets){
         if (itemSet.first.size() == 2)
-            frequentTwoItemsets->insert(itemSet);
+            frequentTwoItemsets.insert(itemSet);
         else if (itemSet.first.size() == 1)
-            frequentOneItemsets->insert(itemSet);
+            frequentOneItemsets.insert(itemSet);
     }
 }
 
 void displayStats(Stats& stats) {
     std::cout << "Frequent itemsets mining time (ms): " << stats.frequentMiningTime << std::endl;
     std::cout << "Algorithm time (ms): " << stats.algorithmTime << std::endl;
+    std::cout << "Number of closed itemsets: " << stats.closedItemsetsCount << std::endl;
+    for (int i = 0; i < 4; ++i)
+        std::cout << "Property " << i + 1 << " calls: " << stats.propertyCalls[i] << std::endl;
 }
 
 bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
@@ -151,14 +154,12 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
         }
         else if (args[i] == "-d" || args[i] == "-dcharm")
             params.dCharm = true;
-        else if (args[i] == "-ds" || args[i] == "-displayStats")
-            params.stats = true;
         else if (args[i] == "-ms" || args[i] == "-minSup") {
             if (++i == args.size()) {
                 displayHelp(true);
                 return false;
             }
-            params.minSup = stoi(args[i]);
+            params.minSup = std::stof(args[i]);
         }
         else if (args[i] == "-p" || args[i] == "-path") {
             if (++i == args.size()) {
@@ -167,22 +168,30 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
             }
             params.path = args[i];
         }
+        else if (args[i] == "-pcs" || args[i] == "-printClosedSets")
+            params.closedItemsets = true;
+        else if (args[i] == "-pcsn" || args[i] == "-printClosedSetsNames")
+            params.closedItemsetsNames = true;
+        else if (args[i] == "-ps" || args[i] == "-printStats")
+            params.stats = true;
         else if (args[i] == "-s" || args[i] == "-sort") {
             if (++i == args.size()) {
                 displayHelp(true);
                 return false;
             }
             if (args[i] == "asc")
-                params.startSort = 1;
+                params.itemsetSort = 1;
             else if (args[i] == "desc")
-                params.startSort = -1;
+                params.itemsetSort = -1;
             else if (args[i] == "lex")
-                params.startSort = 0;
+                params.itemsetSort = 0;
             else {
                 displayHelp(true);
                 return false;
             }
         }
+        else if (args[i] == "-uts" || args[i] == "-useTwoSets")
+            params.twoSetsCheck = true;
         else {
             displayHelp(true);
             return false;
@@ -197,10 +206,14 @@ void displayHelp(const bool& wrongArg) {
     std::cout << "Available command line arguments:" << std::endl;
     std::cout << "-h,-help - print help" << std::endl;
     std::cout << "-d,-dcharm - use dCharm instead of Charm. Defaults to false." << std::endl;
-    std::cout << "-ds,-displayStats - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
+    std::cout << "-ps,-printStats - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
     std::cout << "-e,-example - run example small dataset on Charm (run with -d to use dCharm). Defaults to false." << std::endl;
-    std::cout << "-ms,-minSup <support> - minimum support value for frequent itemsets. Defaults to 2." << std::endl;
+    std::cout << "-ms,-minSup <support> - minimum relative support value for frequent itemsets. Defaults to 0.1." << std::endl;
     std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions. Available names: example, mushroom, nursery, car."<< std::endl;
+    std::cout << "-ps,-printStats - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
+    std::cout << "-pcs,-printClosedSets - print closed itemsets found by algorithm. Defaults to false." << std::endl;
+    std::cout << "-pcsn,-printClosedSetsNames - print closed itemsets items' names instead of their integer mappings. Defaults to false." << std::endl;
     std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/example (example small dataset)." << std::endl;
-    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to asc." << std::endl;
+    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to lex." << std::endl;
+    std::cout << "-uts, -useTwoSets - use frequent two itemsets for checking in algorithms. Defaults to false." << std::endl;
 }

@@ -41,7 +41,7 @@ public:
 
     void setItemSet(item_set * itemSet);
 
-    void insertChild(CharmNode * child);
+    void insertChild(CharmNode * child, int weight = -1);
     void removeChild(childIterator childIt);
     void removeChildren();
 

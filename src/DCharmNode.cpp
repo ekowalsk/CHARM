@@ -118,9 +118,9 @@ int DCharmNode::getHash(){
     return hashValue;
 }
 
-void DCharmNode::insertChild(DCharmNode * child){
+void DCharmNode::insertChild(DCharmNode * child, int weight){
     if (sortMode != 0)
-        children->insert({{child->getSupport()}, child});
+        children->insert({{weight == -1 ? child->getSupport() : weight}, child});
     else
         children->insert({*child->itemSet, child});
 }
@@ -148,7 +148,7 @@ bool DCharmNode::hasChildren(){
 
 void DCharmNode::printItemSet(item_set * itemSet, std::vector<std::string> namesVector){
     for (auto &item : *itemSet)
-        std::cout << namesVector[item] << " ";
+        std::cout << (!namesVector.empty() ? namesVector[item] : std::to_string(item)) << " ";
 }
 
 DCharmNode::~DCharmNode(){

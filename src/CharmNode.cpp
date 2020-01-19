@@ -80,9 +80,9 @@ void CharmNode::setItemSet(item_set * itSet){
     this->itemSet = itSet;
 }
 
-void CharmNode::insertChild(CharmNode * child){
+void CharmNode::insertChild(CharmNode * child, int weight){
     if (sortMode != 0)
-        children->insert({{child->getSupport()}, child});
+        children->insert({{weight == -1 ? child->getSupport() : weight}, child});
     else
         children->insert({*child->itemSet, child});
 }
@@ -129,7 +129,7 @@ bool CharmNode::hasChildren(){
 
 void CharmNode::printItemSet(item_set * itemSet, std::vector<std::string> namesVector){
     for (auto &item : *itemSet)
-        std::cout << namesVector[item] << " ";
+        std::cout << (!namesVector.empty() ? namesVector[item] : std::to_string(item)) << " ";
 }
 
 CharmNode::~CharmNode() {
