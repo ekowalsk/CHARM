@@ -15,20 +15,22 @@ void DCharm::charmExtend(DCharmNode** rootNode, int minSupport, std::array<unsig
     for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd(); ) {
         auto rightHandChildren = childIterator;
         for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd(); ) {
-            auto savedIterator= rNeighbourIterator;
+            auto savedIterator = rNeighbourIterator;
             ++savedIterator;
-            if (checkTwoItemsets) {
-                if (childIterator->second->getItemSet()->size() == 1 && rNeighbourIterator->second->getItemSet()->size() == 1) {
-                    if (!isFrequentItemset(DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second))) {
-                        rNeighbourIterator = savedIterator;
-                        continue;
-                    }
+            DCharmNode::item_set* itemSetUnion = DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
+            if (checkTwoItemsets && itemSetUnion->size() == 2) {
+                if (!isFrequentItemset(itemSetUnion)) {
+                    delete itemSetUnion;
+                    rNeighbourIterator = savedIterator;
+                    continue;
                 }
             }
             DCharmNode::diff_set* diffSet = DCharmNode::getDiffSet(rNeighbourIterator->second, childIterator->second);
-            if (childIterator->second->getSupport() - diffSet->size() > minSupport) {
-                DCharmNode::item_set* itemSetUnion = DCharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
+            if (childIterator->second->getSupport() - diffSet->size() > minSupport)
                 charmProperty(rootNode, itemSetUnion, diffSet, &childIterator, &rNeighbourIterator, propertyStats);
+            else {
+                delete diffSet;
+                delete itemSetUnion;
             }
             rNeighbourIterator = savedIterator;
         }
@@ -109,7 +111,7 @@ bool DCharm::isFrequentItemset(DCharmNode::item_set* twoItemSet) {
 }
 
 void DCharm::setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>>& freqTwoItemsets) {
-    this->frequentTwoItemsets = std::move(freqTwoItemsets);
+    this->frequentTwoItemsets = freqTwoItemsets;
 }
 
 DCharm::~DCharm() {

@@ -15,20 +15,22 @@ void Charm::charmExtend(CharmNode** rootNode, int minSupport, std::array<unsigne
     for (auto childIterator = (*rootNode)->getChildrenBegin(); childIterator != (*rootNode)->getChildrenEnd(); ) {
         auto rightHandChildren = childIterator;
         for (auto rNeighbourIterator = ++rightHandChildren; rNeighbourIterator != (*rootNode)->getChildrenEnd(); ) {
-            auto savedIterator= rNeighbourIterator;
+            auto savedIterator = rNeighbourIterator;
             ++savedIterator;
-            if (checkTwoItemsets) {
-                if (childIterator->second->getItemSet()->size() == 1 && rNeighbourIterator->second->getItemSet()->size() == 1) {
-                    if (!isFrequentItemset(CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second))) {
-                        rNeighbourIterator = savedIterator;
-                        continue;
-                    }
+            CharmNode::item_set* itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
+            if (checkTwoItemsets && itemSetUnion->size() == 2) {
+                if (!isFrequentItemset(itemSetUnion)) {
+                    delete itemSetUnion;
+                    rNeighbourIterator = savedIterator;
+                    continue;
                 }
             }
             CharmNode::tid_list* tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
-            if (tidListIntersection->size() > minSupport) {
-                CharmNode::item_set* itemSetUnion = CharmNode::unionItemSet(childIterator->second, rNeighbourIterator->second);
+            if (tidListIntersection->size() > minSupport)
                 charmProperty(rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator, propertyStats);
+            else {
+                delete tidListIntersection;
+                delete itemSetUnion;
             }
             rNeighbourIterator = savedIterator;
         }
