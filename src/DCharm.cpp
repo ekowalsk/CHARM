@@ -97,11 +97,11 @@ bool DCharm::isSubsumed(DCharmNode* node) {
     }
 }
 
-void DCharm::printClosedItemsets(std::vector<std::string>& namesVector) {
+void DCharm::printClosedItemsets(std::vector<std::string>& namesVector, int rootSupport) {
     for (const auto& element : closedItemsets) {
         for (auto closedItemSet : element.second) {
             DCharmNode::printItemSet(closedItemSet.first, namesVector);
-            std::cout << "   support: " << closedItemSet.second << std::endl;
+            std::cout << "   support: " << static_cast<float>(closedItemSet.second) / static_cast<float>(rootSupport) << " (" <<  closedItemSet.second << ")" << std::endl;
         }
     }
 }

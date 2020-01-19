@@ -24,7 +24,7 @@ public:
     ~DCharm();
     closed_itemsets_map dcharm(DCharmNode** rootNode, int minSupport, std::array<unsigned int, 4>* propertyStats, int checkTwoItemsets);
     void setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>>& frequentTwoItemsets);
-    void printClosedItemsets(std::vector<std::string>& names);
+    void printClosedItemsets(std::vector<std::string>& names, int rootSupport);
 };
 
 #endif

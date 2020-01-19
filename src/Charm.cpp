@@ -99,11 +99,11 @@ bool Charm::isSubsumed(CharmNode::item_set* itemSet, CharmNode::tid_list* tidLis
     }
 }
 
-void Charm::printClosedItemsets(std::vector<std::string>& namesVector) {
+void Charm::printClosedItemsets(std::vector<std::string>& namesVector, int rootSupport) {
     for (const auto& element : closedItemsets) {
         for (auto closedItemSet : element.second) {
             CharmNode::printItemSet(closedItemSet.first, namesVector);
-            std::cout << "   support: " << closedItemSet.second << std::endl;
+            std::cout << "   support: " << static_cast<float>(closedItemSet.second) / static_cast<float>(rootSupport) << " (" <<  closedItemSet.second << ")" << std::endl;
         }
     }
 }

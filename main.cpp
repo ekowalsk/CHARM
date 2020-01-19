@@ -26,7 +26,8 @@ int main(int argc, char* argv[]) {
     int rootSupport = transactions.size();
     bool findTwoSets = params.itemsetSort || params.twoSetsCheck;
     auto frequentMiningStart = std::chrono::steady_clock::now();
-    std::map<std::list<int>, std::list<int>> freqSets = getFrequentItemsets(transactions, static_cast<int>(std::floor(params.minSup * static_cast<float>(rootSupport))), params.dCharm, findTwoSets);
+    int minSup = static_cast<int>(std::floor(params.minSup * static_cast<float>(rootSupport)));
+    std::map<std::list<int>, std::list<int>> freqSets = getFrequentItemsets(transactions, minSup, params.dCharm, findTwoSets);
     std::map<std::list<int>, std::list<int>> frequentOneItemSets, frequentTwoItemSets;
     separateFrequentItemsets(freqSets, frequentOneItemSets, frequentTwoItemSets);
     stats.frequentMiningTime = std::chrono::duration_cast<std::chrono::milliseconds>
@@ -47,12 +48,12 @@ int main(int argc, char* argv[]) {
             }
             root->insertChild(new CharmNode(root, new CharmNode::item_set(itemTid.first), new CharmNode::tid_list(itemTid.second), params.itemsetSort), weight);
         }
-        auto closedItemsets = charm.charm(&root, static_cast<int>(std::floor(params.minSup * static_cast<float>(rootSupport))), &(stats.propertyCalls), params.twoSetsCheck);
+        auto closedItemsets = charm.charm(&root, minSup, &(stats.propertyCalls), params.twoSetsCheck);
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
         if (params.printSets)
-            charm.printClosedItemsets(names);
+            charm.printClosedItemsets(names, rootSupport);
         stats.closedItemsetsCount = closedItemsets.size();
     }
     else {
@@ -70,12 +71,12 @@ int main(int argc, char* argv[]) {
             }
             root->insertChild(new DCharmNode(root, new DCharmNode::item_set(itemTid.first), new DCharmNode::diff_set(itemTid.second), -1, params.itemsetSort), weight);
         }
-        auto closedItemsets = dCharm.dcharm(&root, static_cast<int>(std::floor(params.minSup * static_cast<float>(rootSupport))), &(stats.propertyCalls), params.twoSetsCheck);
+        auto closedItemsets = dCharm.dcharm(&root, minSup, &(stats.propertyCalls), params.twoSetsCheck);
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
         if (params.printSets)
-            dCharm.printClosedItemsets(names);
+            dCharm.printClosedItemsets(names, rootSupport);
         stats.closedItemsetsCount = closedItemsets.size();
     }
     if (params.stats)

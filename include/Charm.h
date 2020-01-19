@@ -23,7 +23,7 @@ public:
     Charm();
     ~Charm();
     closed_itemsets_map charm(CharmNode** rootNode, int minSupport, std::array<unsigned int, 4>* propertyStats, bool checkTwoItemsets);
-    void printClosedItemsets(std::vector<std::string>& namesVector);
+    void printClosedItemsets(std::vector<std::string>& namesVector, int rootSupport);
     void setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>>& frequentTwoItemsets);
 };
 
