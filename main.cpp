@@ -7,21 +7,22 @@
 
 int main(int argc, char* argv[]) {
     Parameter params {
-        .path = "data\\processed\\example",
+        .path = "data/processed/example",
         .minSup = 0.1f,
         .itemsetSort = 0,
         .dCharm = false,
         .stats = false,
-        .closedItemsets = false,
-        .closedItemsetsNames = false,
+        .printSets = true,
+        .printNames = false,
         .twoSetsCheck = false,
     };
+
     Stats stats;
     if (!parseArgs(std::vector<std::string>(argv + 1, argv + argc), params))
         return 1;
 
     std::vector<std::list<int>> transactions = readTransactions(params.path + ".data");
-    std::vector<std::string> names = params.closedItemsetsNames ? readNames(params.path + ".names") : std::vector<std::string>();
+    std::vector<std::string> names = params.printNames ? readNames(params.path + ".names") : std::vector<std::string>();
     int rootSupport = transactions.size();
     bool findTwoSets = params.itemsetSort || params.twoSetsCheck;
     auto frequentMiningStart = std::chrono::steady_clock::now();
@@ -50,7 +51,7 @@ int main(int argc, char* argv[]) {
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
-        if (params.closedItemsets || params.closedItemsetsNames)
+        if (params.printSets)
             charm.printClosedItemsets(names);
         stats.closedItemsetsCount = closedItemsets.size();
     }
@@ -73,7 +74,7 @@ int main(int argc, char* argv[]) {
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
-        if (params.closedItemsets || params.closedItemsetsNames)
+        if (params.printSets)
             dCharm.printClosedItemsets(names);
         stats.closedItemsetsCount = closedItemsets.size();
     }

@@ -12,8 +12,8 @@ typedef struct Parameter {
     int itemsetSort;
     bool dCharm;
     bool stats;
-    bool closedItemsets;
-    bool closedItemsetsNames;
+    bool printSets;
+    bool printNames;
     bool twoSetsCheck;
 } Parameter;
 

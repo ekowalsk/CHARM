@@ -154,6 +154,8 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
         }
         else if (args[i] == "-d" || args[i] == "-dcharm")
             params.dCharm = true;
+        else if (args[i] == "-dps" || args[i] == "-disablePrintSets")
+            params.printSets = false;
         else if (args[i] == "-ms" || args[i] == "-minSup") {
             if (++i == args.size()) {
                 displayHelp(true);
@@ -168,10 +170,8 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params) {
             }
             params.path = args[i];
         }
-        else if (args[i] == "-pcs" || args[i] == "-printClosedSets")
-            params.closedItemsets = true;
-        else if (args[i] == "-pcsn" || args[i] == "-printClosedSetsNames")
-            params.closedItemsetsNames = true;
+        else if (args[i] == "-pn" || args[i] == "-printNames")
+            params.printNames = true;
         else if (args[i] == "-ps" || args[i] == "-printStats")
             params.stats = true;
         else if (args[i] == "-s" || args[i] == "-sort") {
@@ -205,15 +205,13 @@ void displayHelp(const bool& wrongArg) {
         std::cout << "Unrecognized argument provided!" << std::endl;
     std::cout << "Available command line arguments:" << std::endl;
     std::cout << "-h,-help - print help" << std::endl;
-    std::cout << "-d,-dcharm - use dCharm instead of Charm. Defaults to false." << std::endl;
-    std::cout << "-ps,-printStats - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
-    std::cout << "-e,-example - run example small dataset on Charm (run with -d to use dCharm). Defaults to false." << std::endl;
-    std::cout << "-ms,-minSup <support> - minimum relative support value for frequent itemsets. Defaults to 0.1." << std::endl;
-    std::cout << "-p <name>,-path <name> - path to dataset (.data and .names files) without extensions. Available names: example, mushroom, nursery, car."<< std::endl;
-    std::cout << "-ps,-printStats - print statistics (runtime, (d)Charm properties count). Defaults to false." << std::endl;
-    std::cout << "-pcs,-printClosedSets - print closed itemsets found by algorithm. Defaults to false." << std::endl;
-    std::cout << "-pcsn,-printClosedSetsNames - print closed itemsets items' names instead of their integer mappings. Defaults to false." << std::endl;
-    std::cout << "files must have the same first part name, i.e. mushroom.data and mushroom.names. Defaults to data/processed/example (example small dataset)." << std::endl;
-    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Defaults to lex." << std::endl;
-    std::cout << "-uts, -useTwoSets - use frequent two itemsets for checking in algorithms. Defaults to false." << std::endl;
+    std::cout << "-d,-dcharm - use dCharm instead of Charm." << std::endl;
+    std::cout << "-dps,-disablePrintSets - disables printing of closed itemsets." << std::endl;
+    std::cout << "-ms,-minSup <support> - minimum relative support value for frequent itemsets. Defaults value is 0.1." << std::endl;
+    std::cout << "-p <path>,-path <path> - path to dataset (.data and .names files) without extensions. Available names: example, mushroom, nursery, car."<< std::endl;
+    std::cout << "Files must have the same first part name, i.e. mushroom.data and mushroom.names. Default is data/processed/example (example small dataset)." << std::endl;
+    std::cout << "-pn,-printNames - print closed itemsets items' names instead of their integer mappings." << std::endl;
+    std::cout << "-ps,-printStats - print statistics." << std::endl;
+    std::cout << "-s <type>,-sort <type> - type of ordering used in algorithms, possible types: asc (ascending), desc (descending), lex (lexographical). Default is lex." << std::endl;
+    std::cout << "-uts, -useTwoSets - use frequent two itemsets for checking in algorithms." << std::endl;
 }
