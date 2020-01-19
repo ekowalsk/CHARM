@@ -50,12 +50,13 @@ int main(int argc, char* argv[]) {
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
-        if (params.closedItemsets)
+        if (params.closedItemsets || params.closedItemsetsNames)
             charm.printClosedItemsets(names);
         stats.closedItemsetsCount = closedItemsets.size();
     }
     else {
         DCharm dCharm;
+        dCharm.setFrequentTwoItemsets(frequentTwoItemSets);
         auto root = new DCharmNode(nullptr, nullptr, nullptr, rootSupport, params.itemsetSort);
         for (auto& itemTid : frequentOneItemSets) {
             int weight = -1;
@@ -72,7 +73,7 @@ int main(int argc, char* argv[]) {
         delete root;
         stats.algorithmTime = std::chrono::duration_cast<std::chrono::milliseconds>
                 (std::chrono::steady_clock::now() - algorithmStart).count();
-        if (params.closedItemsets)
+        if (params.closedItemsets || params.closedItemsetsNames)
             dCharm.printClosedItemsets(names);
         stats.closedItemsetsCount = closedItemsets.size();
     }

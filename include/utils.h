@@ -1,5 +1,5 @@
-#ifndef CHARM_UTILS_H
-#define CHARM_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <fstream>
 #include <list>
@@ -46,4 +46,4 @@ bool parseArgs(const std::vector<std::string>& args, Parameter& params);
 
 void displayHelp(const bool& wrongArg);
 
-#endif //CHARM_UTILS_H
+#endif

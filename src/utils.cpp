@@ -11,17 +11,17 @@ std::istream& getLine(std::istream& is, std::string& t) {
     std::istream::sentry se(is, true);
     std::streambuf* sb = is.rdbuf();
 
-    for(;;) {
+    for (;;) {
         int c = sb->sbumpc();
         switch (c) {
             case '\n':
                 return is;
             case '\r':
-                if(sb->sgetc() == '\n')
+                if (sb->sgetc() == '\n')
                     sb->sbumpc();
                 return is;
             case EOF:
-                if(t.empty())
+                if (t.empty())
                     is.setstate(std::ios::eofbit);
                 return is;
             default:
@@ -129,8 +129,8 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
     return result;
 }
 
-void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>>& frequentOneItemsets, std::map<std::list<int>, std::list<int>>& frequentTwoItemsets){
-    for (auto itemSet : frequentItemsets){
+void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>>& frequentOneItemsets, std::map<std::list<int>, std::list<int>>& frequentTwoItemsets) {
+    for (auto& itemSet : frequentItemsets) {
         if (itemSet.first.size() == 2)
             frequentTwoItemsets.insert(itemSet);
         else if (itemSet.first.size() == 1)
