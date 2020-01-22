@@ -80,11 +80,8 @@ void CharmNode::setItemSet(item_set* itSet) {
     this->itemSet = itSet;
 }
 
-void CharmNode::insertChild(CharmNode* child, int weight) {
-    if (sortMode != 0)
-        children->insert({{weight == -1 ? child->getSupport() : weight}, child});
-    else
-        children->insert({*child->itemSet, child});
+void CharmNode::insertChild(CharmNode* child, int childSupport) {
+    childSupport != -1 ? children->insert({{childSupport}, child}) : children->insert({*child->itemSet, child});
 }
 
 void CharmNode::removeChild(child_iterator childIt) {

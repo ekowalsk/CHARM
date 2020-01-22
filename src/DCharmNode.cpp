@@ -102,13 +102,9 @@ int DCharmNode::getHash() {
     return hashValue;
 }
 
-void DCharmNode::insertChild(DCharmNode* child, int weight) {
-    if (sortMode != 0)
-        children->insert({{weight == -1 ? child->getSupport() : weight}, child});
-    else
-        children->insert({*child->itemSet, child});
+void DCharmNode::insertChild(DCharmNode* child, int childSupport) {
+    childSupport != -1 ? children->insert({{childSupport}, child}) : children->insert({*child->itemSet, child});
 }
-
 
 int DCharmNode::getSupport() {
     return support;

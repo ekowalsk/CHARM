@@ -19,11 +19,13 @@ typedef struct Parameter {
 
 typedef struct Stats {
     long long frequentMiningTime;
+    long long algorithmTreeTime;
     long long algorithmTime;
     long long closedItemsetsCount;
     std::array<unsigned int, 4> propertyCalls{};
     Stats() {
         frequentMiningTime = 0;
+        algorithmTreeTime = 0;
         algorithmTime = 0;
         closedItemsetsCount = 0;
         propertyCalls = std::array<unsigned int, 4> {0, 0, 0, 0};
@@ -36,9 +38,7 @@ std::vector<std::list<int>> readTransactions(const std::string& filepath);
 
 std::vector<std::string> readNames(const std::string& filepath);
 
-std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets);
-
-void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>>& frequentOneItemsets, std::map<std::list<int>, std::list<int>>& frequentTwoItemsets);
+void getFrequentItemsets(const std::vector<std::list<int>>& transactions, std::map<std::list<int>, std::list<int>>& oneFrequentItemsets, std::map<std::list<int>, std::list<int>>& twoFrequentItemsets, const int minSup, const bool getDiffsets, const bool findTwoSets);
 
 void displayStats(Stats& stats);
 

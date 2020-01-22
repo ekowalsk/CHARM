@@ -46,7 +46,7 @@ public:
 
     void setItemSet(item_set* itemSet);
 
-    void insertChild(DCharmNode* child, int weight = -1);
+    void insertChild(DCharmNode* child, int childSupport = -1);
     void removeChild(child_iterator childIt);
 
     void updateItemSet(item_set* itemSet);

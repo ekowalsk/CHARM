@@ -56,22 +56,24 @@ std::vector<std::string> readNames(const std::string& filepath) {
     return names;
 }
 
-std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<std::list<int>>& transactions, const int& minSup, const bool& getDiffsets, const bool& findTwoSets) {
-    std::map<std::list<int>, std::list<int>> result;
+void getFrequentItemsets(const std::vector<std::list<int>>& transactions, std::map<std::list<int>, std::list<int>>& oneFrequentItemsets, std::map<std::list<int>, std::list<int>>& twoFrequentItemsets, const int minSup, const bool getDiffsets, const bool findTwoSets) {
     int transactionNumber = 0;
     for (auto& transaction : transactions) {
         for (auto& item : transaction) {
             std::list<int> itemset { item };
-            if (result.find(itemset) == result.end())
-                result[itemset] = std::list<int> { transactionNumber };
+            if (oneFrequentItemsets.find(itemset) == oneFrequentItemsets.end())
+                oneFrequentItemsets[itemset] = std::list<int> { transactionNumber };
             else
-                result[itemset].push_back(transactionNumber);
+                oneFrequentItemsets[itemset].push_back(transactionNumber);
         }
         ++transactionNumber;
     }
     std::vector<std::list<int>> toDelete;
     std::map<int, std::list<int>> reducedTransactions;
-    for (auto& it : result) {
+    std::list<int> transactionList(transactions.size());
+    if (getDiffsets)
+        std::iota(transactionList.begin(), transactionList.end(), 0);
+    for (auto& it : oneFrequentItemsets) {
         if (it.second.size() <= minSup)
             toDelete.push_back(it.first);
         else {
@@ -84,9 +86,7 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
                 }
             }
             if (getDiffsets) {
-                std::list<int> transactionList(transactions.size());
                 std::list<int> diffSet;
-                std::iota(transactionList.begin(), transactionList.end(), 0);
                 std::set_difference(transactionList.begin(), transactionList.end(), it.second.begin(), it.second.end(),
                                     std::inserter(diffSet, diffSet.begin()));
                 it.second = diffSet;
@@ -94,53 +94,44 @@ std::map<std::list<int>, std::list<int>> getFrequentItemsets(const std::vector<s
         }
     }
     for (auto& it : toDelete)
-        result.erase(it);
+        oneFrequentItemsets.erase(it);
     if (findTwoSets) {
-        std::map<std::list<int>, std::list<int>> reducedResult;
         transactionNumber = 0;
         for (auto& transaction : reducedTransactions) {
             std::list<int> items = transaction.second;
             for (auto itemOne = items.begin(); itemOne != items.end(); ++itemOne)
                 for (auto itemTwo = std::next(itemOne, 1); itemTwo != items.end(); ++itemTwo) {
                     std::list<int> itemset { *itemOne, *itemTwo };
-                    if (reducedResult.find(itemset) == reducedResult.end())
-                        reducedResult[itemset] = std::list<int> { transactionNumber };
+                    if (twoFrequentItemsets.find(itemset) == twoFrequentItemsets.end())
+                        twoFrequentItemsets[itemset] = std::list<int> { transactionNumber };
                     else
-                        reducedResult[itemset].push_back(transactionNumber);
+                        twoFrequentItemsets[itemset].push_back(transactionNumber);
                 }
             ++transactionNumber;
         }
-        for (auto& it : reducedResult)
+        toDelete.clear();
+        for (auto& it : twoFrequentItemsets)
         {
-            if (it.second.size() > minSup) {
-                if (getDiffsets) {
-                    std::list<int> tidX = result[std::list<int>{it.first.front()}];
-                    std::list<int> tidY = result[std::list<int>{it.first.back()}];
-                    std::list<int> diffSet;
-                    std::set_difference(tidY.begin(), tidY.end(), tidX.begin(), tidX.end(),
-                                        std::inserter(diffSet, diffSet.begin()));
-                    result[it.first] = diffSet;
-                }
-                else
-                    result[it.first] = it.second;
+            if (it.second.size() <= minSup)
+                toDelete.push_back(it.first);
+            else if (getDiffsets) {
+                std::list<int> tidX = oneFrequentItemsets[std::list<int>{it.first.front()}];
+                std::list<int> tidY = oneFrequentItemsets[std::list<int>{it.first.back()}];
+                std::list<int> diffSet;
+                std::set_difference(tidY.begin(), tidY.end(), tidX.begin(), tidX.end(),
+                                    std::inserter(diffSet, diffSet.begin()));
+                twoFrequentItemsets[it.first] = diffSet;
             }
         }
-    }
-    return result;
-}
-
-void separateFrequentItemsets(const std::map<std::list<int>, std::list<int>>& frequentItemsets, std::map<std::list<int>, std::list<int>>& frequentOneItemsets, std::map<std::list<int>, std::list<int>>& frequentTwoItemsets) {
-    for (auto& itemSet : frequentItemsets) {
-        if (itemSet.first.size() == 2)
-            frequentTwoItemsets.insert(itemSet);
-        else if (itemSet.first.size() == 1)
-            frequentOneItemsets.insert(itemSet);
+        for (auto& it : toDelete)
+            twoFrequentItemsets.erase(it);
     }
 }
 
 void displayStats(Stats& stats) {
-    std::cout << "Frequent itemsets mining time (ms): " << stats.frequentMiningTime << std::endl;
-    std::cout << "Algorithm time (ms): " << stats.algorithmTime << std::endl;
+    std::cout << "Frequent itemsets creation time (ms): " << stats.frequentMiningTime << std::endl;
+    std::cout << "Algorithm tree traversal time (ms): " << stats.algorithmTreeTime << std::endl;
+    std::cout << "Total time (ms): " << stats.algorithmTime << std::endl;
     std::cout << "Number of closed itemsets: " << stats.closedItemsetsCount << std::endl;
     for (int i = 0; i < 4; ++i)
         std::cout << "Property " << i + 1 << " calls: " << stats.propertyCalls[i] << std::endl;

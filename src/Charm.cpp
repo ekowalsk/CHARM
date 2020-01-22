@@ -26,8 +26,9 @@ void Charm::charmExtend(CharmNode** rootNode, int minSupport, std::array<unsigne
                 }
             }
             CharmNode::tid_list* tidListIntersection = CharmNode::intersectedTidList(childIterator->second, rNeighbourIterator->second);
-            if (tidListIntersection->size() > minSupport)
-                charmProperty(rootNode, itemSetUnion, tidListIntersection, &childIterator, &rNeighbourIterator, propertyStats);
+            int support = tidListIntersection->size();
+            if (support > minSupport)
+                charmProperty(rootNode, itemSetUnion, tidListIntersection, support, &childIterator, &rNeighbourIterator, propertyStats);
             else {
                 delete tidListIntersection;
                 delete itemSetUnion;
@@ -45,29 +46,29 @@ void Charm::charmExtend(CharmNode** rootNode, int minSupport, std::array<unsigne
         (*rootNode)->removeChild(toCheck);
     }
 }
-void Charm::charmProperty(CharmNode** rootNode, CharmNode::item_set* X, CharmNode::tid_list* Y, CharmNode::child_iterator* nodeIiterator, CharmNode::child_iterator* nodeJiterator, std::array<unsigned int, 4>* propertyStats) {
+void Charm::charmProperty(CharmNode** rootNode, CharmNode::item_set* X, CharmNode::tid_list* Y, int support, CharmNode::child_iterator* nodeIiterator, CharmNode::child_iterator* nodeJiterator, std::array<unsigned int, 4>* propertyStats) {
     CharmNode* nodeI = (*nodeIiterator)->second;
     CharmNode* nodeJ = (*nodeJiterator)->second;
     if (nodeI->equalsTidList(nodeJ)) {
         (*rootNode)->removeChild(*nodeJiterator);
-        (*nodeIiterator)->second->updateItemSet(X);
+        nodeI->updateItemSet(X);
         (*propertyStats)[0] += 1;
         delete X;
         delete Y;
     }
     else if (nodeJ->containsTidList(nodeI)) {
-        (*nodeIiterator)->second->updateItemSet(X);
+        nodeI->updateItemSet(X);
         (*propertyStats)[1] += 1;
         delete X;
         delete Y;
     }
     else if (nodeI->containsTidList(nodeJ)) {
         (*rootNode)->removeChild(*nodeJiterator);
-        (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y, (*nodeIiterator)->second->getSortMode()));
+        nodeI->insertChild(new CharmNode(nodeI, X, Y, nodeI->getSortMode()), nodeI->getSortMode() ? support : -1);
         (*propertyStats)[2] += 1;
     }
     else {
-        (*nodeIiterator)->second->insertChild(new CharmNode((*nodeIiterator)->second, X, Y, (*nodeIiterator)->second->getSortMode()));
+        nodeI->insertChild(new CharmNode(nodeI, X, Y, nodeI->getSortMode()), nodeI->getSortMode() ? support : -1);
         (*propertyStats)[3] += 1;
     }
 }
@@ -85,7 +86,7 @@ void Charm::insertClosedSet(CharmNode::item_set* itemSet, CharmNode::tid_list* t
 bool Charm::isSubsumed(CharmNode::item_set* itemSet, CharmNode::tid_list* tidList) {
     int hash = CharmNode::getHash(tidList);
     try {
-        for (auto & iterator : closedItemsets.at(hash)) {
+        for (auto& iterator : closedItemsets.at(hash)) {
             if (iterator.second == tidList->size()) {
                 if (CharmNode::isItemSetContained(iterator.first, itemSet)) {
                     return true;
@@ -113,7 +114,7 @@ bool Charm::isFrequentItemset(CharmNode::item_set* twoItemSet) {
 }
 
 void Charm::setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>>& freqTwoItemsets) {
-    frequentTwoItemsets = freqTwoItemsets;
+    frequentTwoItemsets = std::move(freqTwoItemsets);
 }
 
 Charm::~Charm() {

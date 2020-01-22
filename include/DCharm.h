@@ -13,7 +13,7 @@ private:
     std::map<std::list<int>, std::list<int>> frequentTwoItemsets;
 
     void charmExtend(DCharmNode** rootNode, int minSupport, std::array<unsigned int, 4>* propertyStats, int checkTwoItemsets);
-    static void charmProperty(DCharmNode** rootNode, DCharmNode::item_set* X, DCharmNode::diff_set* Y,
+    void charmProperty(DCharmNode** rootNode, DCharmNode::item_set* X, DCharmNode::diff_set* Y, int support,
                               DCharmNode::child_iterator* nodeI, DCharmNode::child_iterator* nodeJ, std::array<unsigned int, 4>* propertyStats);
 
     void insertClosedSet(DCharmNode* node);
