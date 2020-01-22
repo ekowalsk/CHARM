@@ -1,6 +1,7 @@
 #ifndef CHARM_H
 #define CHARM_H
 
+#include <set>
 #include <unordered_map>
 
 #include "CharmNode.h"
@@ -10,7 +11,7 @@ public:
     typedef std::unordered_map<int, std::list<std::pair<CharmNode::item_set*, int>>> closed_itemsets_map;
 private:
     closed_itemsets_map closedItemsets;
-    std::map<std::list<int>, std::list<int>> frequentTwoItemsets;
+    std::set<std::list<int>> frequentTwoItemsets;
 
     void charmExtend(CharmNode** rootNode, int minSupport,  std::array<unsigned int, 4>* propertyStats, bool checkTwoItemsets);
     void charmProperty(CharmNode** rootNode, CharmNode::item_set* X, CharmNode::tid_list* Y, int support,
@@ -24,7 +25,7 @@ public:
     ~Charm();
     closed_itemsets_map charm(CharmNode** rootNode, int minSupport, std::array<unsigned int, 4>* propertyStats, bool checkTwoItemsets);
     void printClosedItemsets(std::vector<std::string>& namesVector, int rootSupport);
-    void setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>>& frequentTwoItemsets);
+    void setFrequentTwoItemsets(std::set<std::list<int>>& frequentTwoItemsets);
 };
 
 #endif

@@ -111,7 +111,7 @@ bool DCharm::isFrequentItemset(DCharmNode::item_set* twoItemSet) {
     return !(frequentTwoItemsets.find(*twoItemSet) == frequentTwoItemsets.end());
 }
 
-void DCharm::setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>>& freqTwoItemsets) {
+void DCharm::setFrequentTwoItemsets(std::set<std::list<int>>& freqTwoItemsets) {
     this->frequentTwoItemsets = std::move(freqTwoItemsets);
 }
 

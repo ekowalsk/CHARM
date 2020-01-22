@@ -26,7 +26,8 @@ int main(int argc, char* argv[]) {
     int rootSupport = transactions.size();
     int minSup = static_cast<int>(std::floor(params.minSup * static_cast<float>(rootSupport)));
     auto frequentMiningStart = std::chrono::steady_clock::now();
-    std::map<std::list<int>, std::list<int>> frequentOneItemSets, frequentTwoItemSets;
+    std::map<std::list<int>, std::list<int>> frequentOneItemSets;
+    std::set<std::list<int>> frequentTwoItemSets;
     getFrequentItemsets(transactions, frequentOneItemSets, frequentTwoItemSets, minSup, params.dCharm, params.twoSetsCheck);
     if (!params.dCharm) {
         Charm charm;

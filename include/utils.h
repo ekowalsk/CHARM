@@ -4,6 +4,7 @@
 #include <fstream>
 #include <list>
 #include <map>
+#include <set>
 #include <vector>
 
 typedef struct Parameter {
@@ -38,7 +39,7 @@ std::vector<std::list<int>> readTransactions(const std::string& filepath);
 
 std::vector<std::string> readNames(const std::string& filepath);
 
-void getFrequentItemsets(const std::vector<std::list<int>>& transactions, std::map<std::list<int>, std::list<int>>& oneFrequentItemsets, std::map<std::list<int>, std::list<int>>& twoFrequentItemsets, const int minSup, const bool getDiffsets, const bool findTwoSets);
+void getFrequentItemsets(const std::vector<std::list<int>>& transactions, std::map<std::list<int>, std::list<int>>& oneFrequentItemsets, std::set<std::list<int>>& twoFrequentItemsets, const int minSup, const bool getDiffsets, const bool findTwoSets);
 
 void displayStats(Stats& stats);
 

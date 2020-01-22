@@ -56,7 +56,7 @@ std::vector<std::string> readNames(const std::string& filepath) {
     return names;
 }
 
-void getFrequentItemsets(const std::vector<std::list<int>>& transactions, std::map<std::list<int>, std::list<int>>& oneFrequentItemsets, std::map<std::list<int>, std::list<int>>& twoFrequentItemsets, const int minSup, const bool getDiffsets, const bool findTwoSets) {
+void getFrequentItemsets(const std::vector<std::list<int>>& transactions, std::map<std::list<int>, std::list<int>>& oneFrequentItemsets, std::set<std::list<int>>& twoFrequentItemsets, const int minSup, const bool getDiffsets, const bool findTwoSets) {
     int transactionNumber = 0;
     for (auto& transaction : transactions) {
         for (auto& item : transaction) {
@@ -96,35 +96,24 @@ void getFrequentItemsets(const std::vector<std::list<int>>& transactions, std::m
     for (auto& it : toDelete)
         oneFrequentItemsets.erase(it);
     if (findTwoSets) {
+        std::map<std::list<int>, int> twoItemsets;
         transactionNumber = 0;
         for (auto& transaction : reducedTransactions) {
             std::list<int> items = transaction.second;
             for (auto itemOne = items.begin(); itemOne != items.end(); ++itemOne)
                 for (auto itemTwo = std::next(itemOne, 1); itemTwo != items.end(); ++itemTwo) {
-                    std::list<int> itemset { *itemOne, *itemTwo };
-                    if (twoFrequentItemsets.find(itemset) == twoFrequentItemsets.end())
-                        twoFrequentItemsets[itemset] = std::list<int> { transactionNumber };
+                    std::list<int> itemset{*itemOne, *itemTwo};
+                    if (twoItemsets.find(itemset) == twoItemsets.end())
+                        twoItemsets[itemset] = 1;
                     else
-                        twoFrequentItemsets[itemset].push_back(transactionNumber);
+                        ++twoItemsets[itemset];
+                    ++transactionNumber;
                 }
-            ++transactionNumber;
         }
-        toDelete.clear();
-        for (auto& it : twoFrequentItemsets)
-        {
-            if (it.second.size() <= minSup)
-                toDelete.push_back(it.first);
-            else if (getDiffsets) {
-                std::list<int> tidX = oneFrequentItemsets[std::list<int>{it.first.front()}];
-                std::list<int> tidY = oneFrequentItemsets[std::list<int>{it.first.back()}];
-                std::list<int> diffSet;
-                std::set_difference(tidY.begin(), tidY.end(), tidX.begin(), tidX.end(),
-                                    std::inserter(diffSet, diffSet.begin()));
-                twoFrequentItemsets[it.first] = diffSet;
-            }
+        for (auto& it : twoItemsets) {
+            if (it.second > minSup)
+                twoFrequentItemsets.insert(it.first);
         }
-        for (auto& it : toDelete)
-            twoFrequentItemsets.erase(it);
     }
 }
 

@@ -113,7 +113,7 @@ bool Charm::isFrequentItemset(CharmNode::item_set* twoItemSet) {
     return !(frequentTwoItemsets.find(*twoItemSet) == frequentTwoItemsets.end());
 }
 
-void Charm::setFrequentTwoItemsets(std::map<std::list<int>, std::list<int>>& freqTwoItemsets) {
+void Charm::setFrequentTwoItemsets(std::set<std::list<int>>& freqTwoItemsets) {
     frequentTwoItemsets = std::move(freqTwoItemsets);
 }
 
